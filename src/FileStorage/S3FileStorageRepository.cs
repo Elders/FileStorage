@@ -56,9 +56,12 @@ namespace FileStorage
 
         public LocalFile Download(string fileName, string format = "original")
         {
+            if (formats.ContainsKey(format) == false)
+                throw new NotSupportedException(string.Format("This file format is not supported. {0}", format));
+
             var formatInstance = formats[format];
 
-            if (!formatInstance.FindFile(fileName))
+            if (formatInstance.FindFile(fileName) == false)
                 formatInstance.Generate(fileName);
 
             GetObjectRequest request = new GetObjectRequest
@@ -122,18 +125,13 @@ namespace FileStorage
 
         public byte[] Generate(byte[] data, string format)
         {
-            var formatInstance = formats[format];
-
-            if (ReferenceEquals(null, formatInstance) == false)
-            {
-                var newData = formatInstance.Generate(data);
-
-                return newData;
-            }
-            else
-            {
+            if (formats.ContainsKey(format) == false)
                 throw new NotSupportedException(string.Format("This file format is not supported. {0}", format));
-            }
+
+            var formatInstance = formats[format];
+            var newData = formatInstance.Generate(data);
+
+            return newData;
         }
 
         private void RegisterFormat(IFileFormat format)
