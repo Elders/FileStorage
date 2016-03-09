@@ -28,7 +28,7 @@ namespace FileStorage
                 throw new ArgumentNullException(nameof(containerName));
 
             if (containerRegex.IsMatch(containerName) == false)
-                throw new FormatException("Wrong Azure container name. Check https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/");
+                throw new FormatException("Not supported Azure container name. Check https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/");
 
             storageAccount = CloudStorageAccount.Parse(connectionString);
             if (ReferenceEquals(storageAccount, null) == true)
