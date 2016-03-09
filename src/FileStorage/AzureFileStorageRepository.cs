@@ -63,6 +63,7 @@ namespace FileStorage
                 throw new ArgumentNullException(nameof(fileName));
 
             var formatInstance = formats[format];
+
             if (formatInstance.FindFile(fileName) == false)
                 formatInstance.Generate(fileName);
 
@@ -92,6 +93,9 @@ namespace FileStorage
 
         public byte[] Generate(byte[] data, string format)
         {
+            if (ReferenceEquals(data, null) == true)
+                throw new ArgumentNullException(nameof(data));
+
             if (formats.ContainsKey(format) == false)
                 throw new NotSupportedException($"This file format is not supported. {format}");
 
@@ -117,6 +121,12 @@ namespace FileStorage
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentNullException(nameof(fileName));
+
+            if (ReferenceEquals(data, null) == true)
+                throw new ArgumentNullException(nameof(data));
+
+            if (ReferenceEquals(metaInfo, null) == true)
+                throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
             var blockBlob = container.GetBlockBlobReference(key);
