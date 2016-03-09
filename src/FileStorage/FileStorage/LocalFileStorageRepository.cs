@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using FileStorage.FileFormats;
 
-namespace FileStorage
+namespace FileStorage.FileStorage
 {
     public class LocalFileStorageRepository : IFileStorageRepository
     {

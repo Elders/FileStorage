@@ -1,56 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
-using Amazon;
 using Amazon.CloudFront;
-using Amazon.Runtime;
-using Amazon.S3;
 using Amazon.S3.Model;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
 
-namespace FileStorage
+namespace FileStorage.S3Storage
 {
     public class S3FileStorageRepository : IFileStorageRepository
     {
-        readonly IAmazonS3 client;
-        readonly int urlExpiration;
+        readonly S3FileStorageSettings storageSettings;
+        readonly CloudFrontSettings cloudFrontSettings;
         readonly Dictionary<string, IFileFormat> formats;
-        readonly string bucketName;
-        readonly Regex bucketRegex = new Regex(@"^(?!-)(?!.*--)(?!\.)(?!.*\.\.)[a-z0-9-.]{3,63}(?<!-)(?<!\.)$");
         readonly bool useCloudfront;
 
-        //Cloud Front
-        readonly string cloudfrontPrivateKeyPath;
-        readonly string cloudfrontDomain;
-        readonly string cloudfrontKeypairid;
-
-        public S3FileStorageRepository(string accessKey, string secretKey, string bucketName, string region, int urlExpiration)
+        public S3FileStorageRepository(S3FileStorageSettings storageSettings)
         {
-            if (string.IsNullOrWhiteSpace(accessKey))
-                throw new ArgumentNullException(nameof(accessKey));
+            if (ReferenceEquals(storageSettings, null) == true)
+                throw new ArgumentNullException(nameof(storageSettings));
 
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new ArgumentNullException(nameof(secretKey));
-
-            if (string.IsNullOrWhiteSpace(bucketName))
-                throw new ArgumentNullException(nameof(bucketName));
-
-            if (string.IsNullOrWhiteSpace(region))
-                throw new ArgumentNullException(nameof(region));
-
-            if (bucketRegex.IsMatch(bucketName) == false)
-                throw new FormatException("Not supported Amazon bucket name. Check http://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-s3-bucket-naming-requirements.html");
-
-            this.bucketName = bucketName;
-            this.urlExpiration = urlExpiration;
-
-            var creds = new BasicAWSCredentials(accessKey, secretKey);
-            client = new AmazonS3Client(creds, RegionEndpoint.GetBySystemName(region));
-
-            if (ReferenceEquals(client, null) == true)
-                throw new ArgumentNullException(nameof(client));
+            this.storageSettings = storageSettings;
 
             ImageResizer.Configuration.Config.Current.UpgradeImageBuilder(new CustomImageBuilder());
 
@@ -60,25 +30,15 @@ namespace FileStorage
             RegisterFormat(new Original(this));
         }
 
-        public S3FileStorageRepository(string accessKey, string secretKey, string bucketName, string region, int urlExpiration,
-            bool useCloudfront, string cloudfrontPrivateKeyPath, string cloudfrontDomain, string cloudfrontKeypairid)
-            : this(accessKey, secretKey, bucketName, region, urlExpiration)
+        public S3FileStorageRepository(S3FileStorageSettings storageSettings, CloudFrontSettings cloudFrontSettings)
+            : this(storageSettings)
         {
-            if (string.IsNullOrWhiteSpace(cloudfrontPrivateKeyPath))
-                throw new ArgumentNullException(nameof(cloudfrontPrivateKeyPath));
+            if (ReferenceEquals(cloudFrontSettings, null) == true)
+                throw new ArgumentNullException(nameof(cloudFrontSettings));
 
-            if (string.IsNullOrWhiteSpace(cloudfrontDomain))
-                throw new ArgumentNullException(nameof(cloudfrontDomain));
-
-            if (string.IsNullOrWhiteSpace(cloudfrontKeypairid))
-                throw new ArgumentNullException(nameof(cloudfrontKeypairid));
-
-            this.useCloudfront = useCloudfront;
-            this.cloudfrontPrivateKeyPath = cloudfrontPrivateKeyPath;
-            this.cloudfrontDomain = cloudfrontDomain;
-            this.cloudfrontKeypairid = cloudfrontKeypairid;
+            this.cloudFrontSettings = cloudFrontSettings;
+            useCloudfront = true;
         }
-
 
         public void Upload(string fileName, byte[] data, List<FileMeta> metaInfo, string format = "original")
         {
@@ -96,7 +56,7 @@ namespace FileStorage
             var uploadRequest = new PutObjectRequest
             {
                 InputStream = new MemoryStream(data),
-                BucketName = bucketName,
+                BucketName = storageSettings.BucketName,
                 Key = format + "/" + fileName
             };
 
@@ -105,7 +65,7 @@ namespace FileStorage
                 uploadRequest.Metadata.Add(meta.Key, meta.Value);
             }
 
-            client.PutObjectAsync(uploadRequest);
+            storageSettings.Client.PutObjectAsync(uploadRequest);
         }
 
         public LocalFile Download(string fileName, string format = "original")
@@ -123,11 +83,11 @@ namespace FileStorage
 
             GetObjectRequest request = new GetObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = storageSettings.BucketName,
                 Key = format + "/" + fileName,
             };
 
-            var response = this.client.GetObject(request);
+            var response = storageSettings.Client.GetObject(request);
 
             return new LocalFile(response.ResponseStream.ToByteArray(), fileName);
         }
@@ -143,15 +103,15 @@ namespace FileStorage
             {
                 try
                 {
-                    using (var textReader = File.OpenText(cloudfrontPrivateKeyPath))
+                    using (var textReader = File.OpenText(cloudFrontSettings.CloudfrontPrivateKeyPath))
                     {
                         urlString = AmazonCloudFrontUrlSigner.GetCannedSignedURL(
                             AmazonCloudFrontUrlSigner.Protocol.https,
-                            cloudfrontDomain,
+                            cloudFrontSettings.CloudfrontDomain,
                             textReader,
                             format + "/" + fileName,
-                            cloudfrontKeypairid,
-                            DateTime.UtcNow.AddSeconds(urlExpiration));
+                            cloudFrontSettings.CloudfrontKeypairid,
+                            DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration));
 
                         return urlString;
                     }
@@ -163,15 +123,14 @@ namespace FileStorage
                 }
             }
 
-
             GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
             {
-                BucketName = bucketName,
+                BucketName = storageSettings.BucketName,
                 Key = format + "/" + fileName,
-                Expires = DateTime.UtcNow.AddSeconds(urlExpiration)
+                Expires = DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration)
             };
 
-            urlString = client.GetPreSignedURL(request);
+            urlString = storageSettings.Client.GetPreSignedURL(request);
             return urlString;
         }
 
@@ -180,7 +139,7 @@ namespace FileStorage
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentNullException(nameof(fileName));
 
-            var s3FileInfo = new Amazon.S3.IO.S3FileInfo(client, bucketName, format + "/" + fileName);
+            var s3FileInfo = new Amazon.S3.IO.S3FileInfo(storageSettings.Client, storageSettings.BucketName, format + "/" + fileName);
             if (s3FileInfo.Exists)
                 return true;
 

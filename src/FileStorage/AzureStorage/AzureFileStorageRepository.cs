@@ -1,50 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
 
-namespace FileStorage
+namespace FileStorage.AzureStorage
 {
     public class AzureFileStorageRepository : IFileStorageRepository
     {
-        readonly CloudStorageAccount storageAccount;
-        readonly CloudBlobClient blobClient;
-        readonly CloudBlobContainer container;
-
+        readonly AzureStorageSettings storageSettings;
         readonly Dictionary<string, IFileFormat> formats;
-        readonly int urlExpirationInSeconds;
-        readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
-        public AzureFileStorageRepository(string connectionString, string containerName, int urlExpirationInSeconds)
+        public AzureFileStorageRepository(AzureStorageSettings storageSettings)
         {
-            if (string.IsNullOrWhiteSpace(connectionString))
-                throw new ArgumentNullException(nameof(connectionString));
+            if (ReferenceEquals(storageSettings, null) == true)
+                throw new ArgumentNullException(nameof(storageSettings));
 
-            if (string.IsNullOrWhiteSpace(containerName))
-                throw new ArgumentNullException(nameof(containerName));
-
-            if (containerRegex.IsMatch(containerName) == false)
-                throw new FormatException("Not supported Azure container name. Check https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/");
-
-            storageAccount = CloudStorageAccount.Parse(connectionString);
-            if (ReferenceEquals(storageAccount, null) == true)
-                throw new ArgumentNullException(nameof(storageAccount));
-
-            blobClient = storageAccount.CreateCloudBlobClient();
-            if (ReferenceEquals(blobClient, null) == true)
-                throw new ArgumentNullException(nameof(blobClient));
-
-            container = blobClient.GetContainerReference(containerName);
-            if (ReferenceEquals(container, null) == true)
-                throw new ArgumentNullException(nameof(container));
-
-            container.CreateIfNotExists();
-
-            this.urlExpirationInSeconds = urlExpirationInSeconds;
+            this.storageSettings = storageSettings;
 
             ImageResizer.Configuration.Config.Current.UpgradeImageBuilder(new CustomImageBuilder());
 
@@ -68,7 +41,7 @@ namespace FileStorage
                 formatInstance.Generate(fileName);
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
 
             using (var memoryStream = new MemoryStream())
             {
@@ -85,7 +58,7 @@ namespace FileStorage
                 throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
             var result = blockBlob.Exists();
 
             return result;
@@ -111,7 +84,7 @@ namespace FileStorage
                 throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
             var sas = GetSasContainerToken();
 
             return blockBlob.Uri + sas;
@@ -129,7 +102,7 @@ namespace FileStorage
                 throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
 
             blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
 
@@ -145,11 +118,11 @@ namespace FileStorage
         {
             var sasConstraints = new SharedAccessBlobPolicy
             {
-                SharedAccessExpiryTime = DateTime.UtcNow.AddSeconds(urlExpirationInSeconds),
+                SharedAccessExpiryTime = DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration),
                 Permissions = SharedAccessBlobPermissions.Read
             };
 
-            var sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
+            var sasContainerToken = storageSettings.Container.GetSharedAccessSignature(sasConstraints);
             return sasContainerToken;
         }
 
