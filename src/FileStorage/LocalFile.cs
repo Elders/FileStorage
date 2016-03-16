@@ -1,6 +1,6 @@
 ﻿namespace FileStorage
 {
-    public class LocalFile
+    public class LocalFile : IFile
     {
         public LocalFile(byte[] data, string fileName)
         {

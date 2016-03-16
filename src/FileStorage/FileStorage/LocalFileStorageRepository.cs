@@ -19,7 +19,7 @@ namespace FileStorage.FileStorage
             Initialize(storageFolder);
         }
 
-        public void Upload(string fileName, byte[] data, List<FileMeta> metaInfo, string format = "original")
+        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentNullException(nameof(fileName));
@@ -31,7 +31,7 @@ namespace FileStorage.FileStorage
                 throw new ArgumentNullException(nameof(metaInfo));
 
             var filePath = Path.Combine(storageFolder, format, fileName);
-
+            // todo meta to files
             var fileInfo = new FileInfo(filePath);
 
             if (!fileInfo.Directory.Exists)
@@ -40,7 +40,7 @@ namespace FileStorage.FileStorage
             File.WriteAllBytes(filePath, data);
         }
 
-        public LocalFile Download(string fileName, string format = "original")
+        public IFile Download(string fileName, string format = "original")
         {
             if (formats.ContainsKey(format) == false)
                 throw new NotSupportedException($"This file format is not supported. {format}");
@@ -142,7 +142,7 @@ namespace FileStorage.FileStorage
                 Directory.CreateDirectory(Path.Combine(storageFolder, Original.FormatName));
         }
 
-        private void RegisterFormat(IFileFormat format)
+        public void RegisterFormat(IFileFormat format)
         {
             formats.Add(format.Name, format);
         }

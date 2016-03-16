@@ -14,29 +14,19 @@ namespace FileStorage.AzureStorage
 
         public AzureFileStorageRepository(AzureStorageSettings storageSettings)
         {
-            if (ReferenceEquals(storageSettings, null) == true)
-                throw new ArgumentNullException(nameof(storageSettings));
-
+            if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
             this.storageSettings = storageSettings;
 
             ImageResizer.Configuration.Config.Current.UpgradeImageBuilder(new CustomImageBuilder());
-
             formats = new Dictionary<string, IFileFormat>();
-            RegisterFormat(new MobileFull(this));
-            RegisterFormat(new MobileThumbnail(this));
-            RegisterFormat(new Original(this));
         }
 
-        public LocalFile Download(string fileName, string format = "original")
+        public IFile Download(string fileName, string format = "original")
         {
-            if (formats.ContainsKey(format) == false)
-                throw new NotSupportedException($"This file format is not supported. {format}");
-
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var formatInstance = formats[format];
-
             if (formatInstance.FindFile(fileName) == false)
                 formatInstance.Generate(fileName);
 
@@ -54,8 +44,7 @@ namespace FileStorage.AzureStorage
 
         public bool FileExists(string fileName, string format = "original")
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
@@ -66,11 +55,8 @@ namespace FileStorage.AzureStorage
 
         public byte[] Generate(byte[] data, string format)
         {
-            if (ReferenceEquals(data, null) == true)
-                throw new ArgumentNullException(nameof(data));
-
-            if (formats.ContainsKey(format) == false)
-                throw new NotSupportedException($"This file format is not supported. {format}");
+            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
+            if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");
 
             var formatInstance = formats[format];
             var newData = formatInstance.Generate(data);
@@ -80,26 +66,23 @@ namespace FileStorage.AzureStorage
 
         public string GetFileUri(string fileName, string format = "original")
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
-            var sas = GetSasContainerToken();
+            var sharedAccessSignature = GetSasContainerToken();
 
-            return blockBlob.Uri + sas;
+            if (string.IsNullOrWhiteSpace(storageSettings.CdnUrl) == false)
+                return storageSettings.CdnUrl + blockBlob.Uri.AbsolutePath + sharedAccessSignature;
+
+            return blockBlob.Uri + sharedAccessSignature;
         }
 
-        public void Upload(string fileName, byte[] data, List<FileMeta> metaInfo, string format = "original")
+        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
-            if (ReferenceEquals(data, null) == true)
-                throw new ArgumentNullException(nameof(data));
-
-            if (ReferenceEquals(metaInfo, null) == true)
-                throw new ArgumentNullException(nameof(metaInfo));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
+            if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
@@ -131,7 +114,7 @@ namespace FileStorage.AzureStorage
             return format + "/" + fileName;
         }
 
-        void RegisterFormat(IFileFormat format)
+        public void RegisterFormat(IFileFormat format)
         {
             formats.Add(format.Name, format);
         }

@@ -88,6 +88,7 @@
     <Compile Include="FileFormats\MobileThumbnail.cs" />
     <Compile Include="FileFormats\Original.cs" />
     <Compile Include="FileMeta.cs" />
+    <Compile Include="IFile.cs" />
     <Compile Include="IFileStorageRepository.cs" />
     <Compile Include="LocalFile.cs" />
     <Compile Include="FileStorage\LocalFileStorageRepository.cs" />

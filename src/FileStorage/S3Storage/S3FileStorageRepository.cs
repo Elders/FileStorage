@@ -8,48 +8,59 @@ using FileStorage.FileFormats;
 
 namespace FileStorage.S3Storage
 {
+    //public class StorageSettings
+    //{ }
+
+    //public class GG
+    //{
+    //    public GG()
+    //    {
+    //        var repository = new StorageSettings().UseS3Storage(x =>
+    //        {
+    //            return x.
+    //        });
+    //    }
+    //}
+
+    //public static class SettingsExtentions
+    //{
+    //    //public static S3FileStorageRepository UseS3Storage(this StorageSettings self, Func<StorageSettings, S3FileStorageSettings> settings)
+    //    //{
+    //    //    return new S3FileStorageRepository(settings());
+    //    //}
+
+    //    //public static S3FileStorageSettings UseS3Bucket(this StorageSettings self, string accessKey, string secretKey, string bucketName, string region, int urlExpiration)
+    //    //{
+    //    //    return new S3FileStorageSettings(accessKey, secretKey, bucketName, region, urlExpiration);
+    //    //}
+
+    //    public static S3FileStorageSettings UseCloudFront(this S3FileStorageSettings self, string cloudfrontPrivateKeyPath, string cloudfrontDomain, string cloudfrontKeypairid)
+    //    {
+    //        self.Cdn = new CloudFrontSettings(cloudfrontPrivateKeyPath, cloudfrontDomain, cloudfrontKeypairid);
+
+    //        return self;
+    //    }
+    //}
+
     public class S3FileStorageRepository : IFileStorageRepository
     {
         readonly S3FileStorageSettings storageSettings;
-        readonly CloudFrontSettings cloudFrontSettings;
+        CloudFrontSettings cloudFrontSettings;
         readonly Dictionary<string, IFileFormat> formats;
-        readonly bool useCloudfront;
 
         public S3FileStorageRepository(S3FileStorageSettings storageSettings)
         {
-            if (ReferenceEquals(storageSettings, null) == true)
-                throw new ArgumentNullException(nameof(storageSettings));
+            if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
 
             this.storageSettings = storageSettings;
-
-            ImageResizer.Configuration.Config.Current.UpgradeImageBuilder(new CustomImageBuilder());
-
             formats = new Dictionary<string, IFileFormat>();
-            RegisterFormat(new MobileFull(this));
-            RegisterFormat(new MobileThumbnail(this));
-            RegisterFormat(new Original(this));
         }
 
-        public S3FileStorageRepository(S3FileStorageSettings storageSettings, CloudFrontSettings cloudFrontSettings)
-            : this(storageSettings)
+        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
-            if (ReferenceEquals(cloudFrontSettings, null) == true)
-                throw new ArgumentNullException(nameof(cloudFrontSettings));
-
-            this.cloudFrontSettings = cloudFrontSettings;
-            useCloudfront = true;
-        }
-
-        public void Upload(string fileName, byte[] data, List<FileMeta> metaInfo, string format = "original")
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
-            if (ReferenceEquals(data, null) == true)
-                throw new ArgumentNullException(nameof(data));
-
-            if (ReferenceEquals(metaInfo, null) == true)
-                throw new ArgumentNullException(nameof(metaInfo));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
+            if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             var metaData = new MetadataCollection();
 
@@ -68,13 +79,10 @@ namespace FileStorage.S3Storage
             storageSettings.Client.PutObjectAsync(uploadRequest);
         }
 
-        public LocalFile Download(string fileName, string format = "original")
+        public IFile Download(string fileName, string format = "original")
         {
-            if (formats.ContainsKey(format) == false)
-                throw new NotSupportedException($"This file format is not supported. {format}");
-
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var formatInstance = formats[format];
 
@@ -94,12 +102,11 @@ namespace FileStorage.S3Storage
 
         public string GetFileUri(string fileName, string format = "original")
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             string urlString = string.Empty;
 
-            if (useCloudfront == true)
+            if (ReferenceEquals(cloudFrontSettings, null) == false)
             {
                 try
                 {
@@ -122,22 +129,24 @@ namespace FileStorage.S3Storage
                     return string.Empty;
                 }
             }
-
-            GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
+            else
             {
-                BucketName = storageSettings.BucketName,
-                Key = format + "/" + fileName,
-                Expires = DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration)
-            };
+                var request = new GetPreSignedUrlRequest
+                {
+                    BucketName = storageSettings.BucketName,
+                    Key = format + "/" + fileName,
+                    Expires = DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration)
+                };
 
-            urlString = storageSettings.Client.GetPreSignedURL(request);
-            return urlString;
+                urlString = storageSettings.Client.GetPreSignedURL(request);
+                return urlString;
+            }
+
         }
 
         public bool FileExists(string fileName, string format = "original")
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var s3FileInfo = new Amazon.S3.IO.S3FileInfo(storageSettings.Client, storageSettings.BucketName, format + "/" + fileName);
             if (s3FileInfo.Exists)
@@ -148,11 +157,8 @@ namespace FileStorage.S3Storage
 
         public byte[] Generate(byte[] data, string format)
         {
-            if (ReferenceEquals(data, null) == true)
-                throw new ArgumentNullException(nameof(data));
-
-            if (formats.ContainsKey(format) == false)
-                throw new NotSupportedException(string.Format("This file format is not supported. {0}", format));
+            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
+            if (formats.ContainsKey(format) == false) throw new NotSupportedException(string.Format("This file format is not supported. {0}", format));
 
             var formatInstance = formats[format];
             var newData = formatInstance.Generate(data);
@@ -160,9 +166,15 @@ namespace FileStorage.S3Storage
             return newData;
         }
 
-        private void RegisterFormat(IFileFormat format)
+        public void RegisterFormat(IFileFormat format)
         {
             formats.Add(format.Name, format);
+        }
+
+        public void UseCloudFront(CloudFrontSettings cloudFrontSettings)
+        {
+            if (ReferenceEquals(cloudFrontSettings, null) == true) throw new ArgumentNullException(nameof(cloudFrontSettings));
+            this.cloudFrontSettings = cloudFrontSettings;
         }
     }
 }
