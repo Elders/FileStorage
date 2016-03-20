@@ -63,12 +63,14 @@ namespace FileStorage.S3Storage
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             var metaData = new MetadataCollection();
+            var contentType = MimeTypes.GetMimeType(new FileInfo(fileName).Extension);
 
             var uploadRequest = new PutObjectRequest
             {
                 InputStream = new MemoryStream(data),
                 BucketName = storageSettings.BucketName,
-                Key = format + "/" + fileName
+                Key = format + "/" + fileName,
+                ContentType = contentType
             };
 
             foreach (var meta in metaInfo)

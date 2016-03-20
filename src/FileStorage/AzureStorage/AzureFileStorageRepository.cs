@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.WindowsAzure.Storage.Blob;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
+using FileStorage.S3Storage;
 
 namespace FileStorage.AzureStorage
 {
@@ -95,6 +96,10 @@ namespace FileStorage.AzureStorage
             }
 
             blockBlob.SetMetadataAsync();
+
+            var contentType = MimeTypes.GetMimeType(new FileInfo(fileName).Extension);
+            blockBlob.Properties.ContentType = contentType;
+            blockBlob.SetPropertiesAsync();
         }
 
         string GetSasContainerToken()
