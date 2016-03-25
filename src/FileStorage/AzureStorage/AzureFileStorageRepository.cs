@@ -1,46 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
-using FileStorage.S3Storage;
+using FileStorage.Generators;
 
 namespace FileStorage.AzureStorage
 {
     public class AzureFileStorageRepository : IFileStorageRepository
     {
         readonly AzureStorageSettings storageSettings;
-        readonly Dictionary<string, IFileFormat> formats;
 
         public AzureFileStorageRepository(AzureStorageSettings storageSettings)
         {
             if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
             this.storageSettings = storageSettings;
-
-            ImageResizer.Configuration.Config.Current.UpgradeImageBuilder(new CustomImageBuilder());
-            formats = new Dictionary<string, IFileFormat>();
         }
 
         public IFile Download(string fileName, string format = "original")
         {
-            if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
-
-            var formatInstance = formats[format];
-            if (formatInstance.FindFile(fileName) == false)
-                formatInstance.Generate(fileName);
 
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
 
-            using (var memoryStream = new MemoryStream())
+            try
             {
-                blockBlob.DownloadToStream(memoryStream);
-                memoryStream.Position = 0;
+                using (var memoryStream = new MemoryStream())
+                {
+                    blockBlob.DownloadToStream(memoryStream);
+                    memoryStream.Position = 0;
 
-                return new LocalFile(memoryStream.ToByteArray(), fileName);
+                    return new LocalFile(memoryStream.ToByteArray(), fileName);
+                }
             }
+
+            catch (StorageException ex)
+            {
+                if (ex.RequestInformation.ExtendedErrorInformation.ErrorCode == StorageErrorCodeStrings.ResourceNotFound && format != Original.FormatName)
+                {
+                    if (storageSettings.IsGenerationEnabled == true)
+                    {
+                        var file = storageSettings.Generator.Generate(Download(fileName).Data, format);
+                        return new LocalFile(file.Data, fileName);
+                    }
+
+                    throw new FileNotFoundException($"File not found. Plugin in {typeof(IFileGenerator)} to generate it.");
+                }
+
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public bool FileExists(string fileName, string format = "original")
@@ -52,17 +69,6 @@ namespace FileStorage.AzureStorage
             var result = blockBlob.Exists();
 
             return result;
-        }
-
-        public byte[] Generate(byte[] data, string format)
-        {
-            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
-            if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");
-
-            var formatInstance = formats[format];
-            var newData = formatInstance.Generate(data);
-
-            return newData;
         }
 
         public string GetFileUri(string fileName, string format = "original")
@@ -97,7 +103,7 @@ namespace FileStorage.AzureStorage
 
             blockBlob.SetMetadataAsync();
 
-            var contentType = MimeTypes.GetMimeType(new FileInfo(fileName).Extension);
+            var contentType = MimeTypes.GetMimeType(data);
             blockBlob.Properties.ContentType = contentType;
             blockBlob.SetPropertiesAsync();
         }
@@ -106,7 +112,7 @@ namespace FileStorage.AzureStorage
         {
             var sasConstraints = new SharedAccessBlobPolicy
             {
-                SharedAccessExpiryTime = DateTime.UtcNow.AddSeconds(storageSettings.UrlExpiration),
+                SharedAccessExpiryTime = storageSettings.UrlExpiration.InDateTime,
                 Permissions = SharedAccessBlobPermissions.Read
             };
 
@@ -117,11 +123,6 @@ namespace FileStorage.AzureStorage
         string GetKey(string fileName, string format)
         {
             return format + "/" + fileName;
-        }
-
-        public void RegisterFormat(IFileFormat format)
-        {
-            formats.Add(format.Name, format);
         }
     }
 }

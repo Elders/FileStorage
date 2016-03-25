@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using ImageResizer;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using FileStorage.Generators;
 
 namespace FileStorage.AzureStorage
 {
-    public class AzureStorageSettings
+    public class AzureStorageSettings : IFileStorageSettings<AzureStorageSettings>
     {
         public CloudBlobContainer Container { get; private set; }
-        public int UrlExpiration { get; set; }
-        public string CdnUrl { get; set; }
-        public ImageBuilder ImageBuilder { get; set; }
+        public UrlExpiration UrlExpiration { get; set; }
+        public string CdnUrl { get; private set; }
+        public IFileGenerator Generator { get; private set; }
+        public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
 
         readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
@@ -29,6 +30,28 @@ namespace FileStorage.AzureStorage
 
             if (ReferenceEquals(Container, null) == true) throw new ArgumentNullException(nameof(Container));
             Container.CreateIfNotExists();
+
+            UseUrlExpiration(new UrlExpiration());
+        }
+
+        public AzureStorageSettings UseUrlExpiration(UrlExpiration expiration)
+        {
+            if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
+            UrlExpiration = expiration;
+            return this;
+        }
+
+        public AzureStorageSettings UseFileGenerator(IFileGenerator generator)
+        {
+            if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
+            Generator = generator;
+            return this;
+        }
+
+        public AzureStorageSettings UseCdn(string cdnUrl)
+        {
+            CdnUrl = cdnUrl;
+            return this;
         }
     }
 }

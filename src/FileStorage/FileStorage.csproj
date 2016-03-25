@@ -82,21 +82,24 @@
     <Compile Include="AzureStorage\AzureFileStorageRepository.cs" />
     <Compile Include="AzureStorage\AzureStorageSettings.cs" />
     <Compile Include="Extensions\StreamExtentions.cs" />
-    <Compile Include="FileFormats\CustomImageBuilder.cs" />
     <Compile Include="FileFormats\IFileFormat.cs" />
-    <Compile Include="FileFormats\MobileFull.cs" />
-    <Compile Include="FileFormats\MobileThumbnail.cs" />
     <Compile Include="FileFormats\Original.cs" />
+    <Compile Include="Generators\FIleGenerateResponse.cs" />
     <Compile Include="FileMeta.cs" />
+    <Compile Include="Generators\FileGenerator.cs" />
     <Compile Include="IFile.cs" />
+    <Compile Include="Generators\IFileGenerator.cs" />
     <Compile Include="IFileStorageRepository.cs" />
     <Compile Include="LocalFile.cs" />
-    <Compile Include="FileStorage\LocalFileStorageRepository.cs" />
+    <Compile Include="LocalFileStorage\LocalFileStorageRepository.cs" />
+    <Compile Include="LocalFileStorage\LocalFileStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="S3Storage\CloudFrontSettings.cs" />
-    <Compile Include="S3Storage\MimeTypes.cs" />
+    <Compile Include="MimeTypes.cs" />
+    <Compile Include="IFileStorageSettings.cs" />
     <Compile Include="S3Storage\S3FileStorageRepository.cs" />
     <Compile Include="S3Storage\S3FileStorageSettings.cs" />
+    <Compile Include="UrlExpiration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

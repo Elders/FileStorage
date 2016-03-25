@@ -3,15 +3,18 @@ using System.Text.RegularExpressions;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
+using FileStorage.Generators;
 
 namespace FileStorage.S3Storage
 {
-    public class S3FileStorageSettings
+    public class S3FileStorageSettings : IFileStorageSettings<S3FileStorageSettings>
     {
         // AmazonS3 thread safe https://forums.aws.amazon.com/thread.jspa?threadID=78026&tstart=0
         public IAmazonS3 Client { get; private set; }
         public string BucketName { get; private set; }
-        public int UrlExpiration { get; set; }
+        public UrlExpiration UrlExpiration { get; private set; }
+        public IFileGenerator Generator { get; private set; }
+        public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
 
         readonly Regex bucketRegex = new Regex(@"^(?!-)(?!.*--)(?!\.)(?!.*\.\.)[a-z0-9-.]{3,63}(?<!-)(?<!\.)$");
 
@@ -28,6 +31,22 @@ namespace FileStorage.S3Storage
             Client = new AmazonS3Client(creds, RegionEndpoint.GetBySystemName(region));
 
             if (ReferenceEquals(Client, null) == true) throw new ArgumentNullException(nameof(Client));
+
+            UseUrlExpiration(new UrlExpiration());
+        }
+
+        public S3FileStorageSettings UseUrlExpiration(UrlExpiration expiration)
+        {
+            if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
+            UrlExpiration = expiration;
+            return this;
+        }
+
+        public S3FileStorageSettings UseFileGenerator(IFileGenerator generator)
+        {
+            if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
+            Generator = generator;
+            return this;
         }
     }
 }

@@ -37,19 +37,5 @@ namespace FileStorage
         /// <param name="format">The file format to check.</param>
         /// <returns>true if file</returns>
         bool FileExists(string fileName, string format = "original");
-
-        /// <summary>
-        /// Generates a file to specific format
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        byte[] Generate(byte[] data, string format);
-
-        /// <summary>
-        /// Registers Format ...
-        /// </summary>
-        /// <param name="format"></param>
-        void RegisterFormat(IFileFormat format);
     }
 }
