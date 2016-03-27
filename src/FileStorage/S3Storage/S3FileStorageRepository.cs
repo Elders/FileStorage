@@ -58,7 +58,7 @@ namespace FileStorage.S3Storage
                 var request = new GetObjectRequest
                 {
                     BucketName = storageSettings.BucketName,
-                    Key = format + "/" + fileName,
+                    Key = format + "/" + fileName
                 };
 
                 using (var response = storageSettings.Client.GetObject(request))
@@ -111,7 +111,7 @@ namespace FileStorage.S3Storage
                         return urlString;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return string.Empty;
                 }

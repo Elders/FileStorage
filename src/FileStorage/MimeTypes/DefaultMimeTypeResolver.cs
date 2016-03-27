@@ -7,8 +7,7 @@ namespace FileStorage.MimeTypes
     public class DefaultMimeTypeResolver : IMimeTypeResolver
     {
         string defaultMimeType = "application/octet-stream";
-
-        IList<MimeTypeMapper> mappings = new List<MimeTypeMapper>
+        readonly IList<MimeTypeMapper> mappings = new List<MimeTypeMapper>
             {
                 new MimeTypeMapper( "BMP", "image/bmp", new MimeTypePattern(new byte[] { 66, 77 }) ),
                 new MimeTypeMapper( "DOC", "application/msword", new MimeTypePattern(new byte[] { 208, 207, 17, 224, 161, 177, 26, 225 } )),

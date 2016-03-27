@@ -71,7 +71,7 @@ namespace FileStorage.LocalFileStorage
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var directoryPath = Path.Combine(storageSettings.StorageFolder, format);
-            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+            var directoryInfo = new DirectoryInfo(directoryPath);
             FileInfo[] files = directoryInfo.GetFiles();
             var found = files.SingleOrDefault(x => x.Name.ToLowerInvariant() == fileName.ToLowerInvariant());
 
@@ -87,7 +87,7 @@ namespace FileStorage.LocalFileStorage
                 throw new ArgumentNullException(nameof(fileName));
 
             var directoryPath = Path.Combine(storageSettings.StorageFolder, format);
-            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+            var directoryInfo = new DirectoryInfo(directoryPath);
             FileInfo[] files = directoryInfo.GetFiles();
             var found = files.SingleOrDefault(x => x.Name.ToLowerInvariant() == fileName.ToLowerInvariant());
 
