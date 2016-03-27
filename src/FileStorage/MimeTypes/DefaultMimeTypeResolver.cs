@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FileStorage.MimeTypes
 {
@@ -47,8 +49,6 @@ namespace FileStorage.MimeTypes
                 new MimeTypeMapper( "JPG", "image/bmp", new MimeTypePattern("42 4D" )),
                 new MimeTypeMapper( "GIF", "image/gif", new MimeTypePattern("47 49 46 38 37 61" )),
                 new MimeTypeMapper( "GIF", "image/gif", new MimeTypePattern("47 49 46 38 39 61" ))
-
-
             };
 
         public string GetMimeType(byte[] data)
@@ -60,6 +60,11 @@ namespace FileStorage.MimeTypes
             }
 
             return defaultMimeType;
+        }
+
+        public IReadOnlyCollection<string> SupportedTypes
+        {
+            get { return mappings.Select(x => x.Name).Distinct((StringComparer.InvariantCultureIgnoreCase)).ToList().AsReadOnly(); }
         }
     }
 }
