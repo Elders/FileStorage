@@ -4,6 +4,7 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using FileStorage.Generators;
+using FileStorage.MimeTypes;
 
 namespace FileStorage.S3Storage
 {
@@ -15,6 +16,8 @@ namespace FileStorage.S3Storage
         public UrlExpiration UrlExpiration { get; private set; }
         public IFileGenerator Generator { get; private set; }
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
+        public IMimeTypeResolver MimeTypeResolver { get; private set; }
+        public bool IsMimeTypeResolverEnabled { get { return ReferenceEquals(MimeTypeResolver, null) == false; } }
 
         readonly Regex bucketRegex = new Regex(@"^(?!-)(?!.*--)(?!\.)(?!.*\.\.)[a-z0-9-.]{3,63}(?<!-)(?<!\.)$");
 
@@ -46,6 +49,13 @@ namespace FileStorage.S3Storage
         {
             if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
             Generator = generator;
+            return this;
+        }
+
+        public S3FileStorageSettings UseMimeTypeResolver(IMimeTypeResolver resolver)
+        {
+            if (ReferenceEquals(resolver, null) == true) throw new ArgumentNullException(nameof(resolver));
+            MimeTypeResolver = resolver;
             return this;
         }
     }

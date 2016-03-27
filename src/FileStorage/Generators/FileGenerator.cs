@@ -8,6 +8,7 @@ namespace FileStorage.Generators
     {
         readonly Dictionary<string, IFileFormat> formats;
 
+        public IEnumerable<IFileFormat> Formats => formats.Values;
 
         public FileGenerator()
         {

@@ -29,16 +29,17 @@ namespace FileStorage.S3Storage
             if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
-            var metaData = new MetadataCollection();
-            var contentType = MimeTypes.GetMimeType(data);
-
             var uploadRequest = new PutObjectRequest
             {
                 InputStream = new MemoryStream(data),
                 BucketName = storageSettings.BucketName,
-                Key = format + "/" + fileName,
-                ContentType = contentType
+                Key = format + "/" + fileName
             };
+
+            if (storageSettings.IsMimeTypeResolverEnabled)
+            {
+                uploadRequest.ContentType = storageSettings.MimeTypeResolver.GetMimeType(data);
+            }
 
             foreach (var meta in metaInfo)
             {

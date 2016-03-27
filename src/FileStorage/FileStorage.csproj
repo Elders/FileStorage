@@ -66,6 +66,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Spatial, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.7.0\lib\net40\System.Spatial.dll</HintPath>
       <Private>True</Private>
@@ -81,6 +85,12 @@
   <ItemGroup>
     <Compile Include="AzureStorage\AzureFileStorageRepository.cs" />
     <Compile Include="AzureStorage\AzureStorageSettings.cs" />
+    <Compile Include="MimeTypes\DefaultMimeTypeResolver.cs" />
+    <Compile Include="MimeTypes\IMimeTypeResolver.cs" />
+    <Compile Include="MimeTypes\MimeTypeMapper.cs" />
+    <Compile Include="MimeTypes\MimeTypePattern.cs" />
+    <Compile Include="Multipart\CustomMultipartFileData.cs" />
+    <Compile Include="Multipart\CustomMultipartStreamProvider.cs" />
     <Compile Include="Extensions\StreamExtentions.cs" />
     <Compile Include="FileFormats\IFileFormat.cs" />
     <Compile Include="FileFormats\Original.cs" />
@@ -95,7 +105,6 @@
     <Compile Include="LocalFileStorage\LocalFileStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="S3Storage\CloudFrontSettings.cs" />
-    <Compile Include="MimeTypes.cs" />
     <Compile Include="IFileStorageSettings.cs" />
     <Compile Include="S3Storage\S3FileStorageRepository.cs" />
     <Compile Include="S3Storage\S3FileStorageSettings.cs" />

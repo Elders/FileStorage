@@ -1,4 +1,5 @@
-﻿using FileStorage.FileFormats;
+﻿using System.Collections.Generic;
+using FileStorage.FileFormats;
 
 namespace FileStorage.Generators
 {
@@ -17,5 +18,10 @@ namespace FileStorage.Generators
         /// </summary>
         /// <param name="format"></param>
         IFileGenerator RegisterFormat(IFileFormat format);
+
+        /// <summary>
+        /// All registered formats
+        /// </summary>
+        IEnumerable<IFileFormat> Formats { get; }
     }
 }

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using FileStorage.Generators;
+using FileStorage.MimeTypes;
 
 namespace FileStorage.AzureStorage
 {
@@ -13,6 +14,8 @@ namespace FileStorage.AzureStorage
         public string CdnUrl { get; private set; }
         public IFileGenerator Generator { get; private set; }
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
+        public IMimeTypeResolver MimeTypeResolver { get; private set; }
+        public bool IsMimeTypeResolverEnabled { get { return ReferenceEquals(MimeTypeResolver, null) == false; } }
 
         readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
@@ -51,6 +54,13 @@ namespace FileStorage.AzureStorage
         public AzureStorageSettings UseCdn(string cdnUrl)
         {
             CdnUrl = cdnUrl;
+            return this;
+        }
+
+        public AzureStorageSettings UseMimeTypeResolver(IMimeTypeResolver resolver)
+        {
+            if (ReferenceEquals(resolver, null) == true) throw new ArgumentNullException(nameof(resolver));
+            MimeTypeResolver = resolver;
             return this;
         }
     }

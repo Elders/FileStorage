@@ -94,18 +94,18 @@ namespace FileStorage.AzureStorage
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
 
-            blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
-
             foreach (var meta in metaInfo)
             {
                 blockBlob.Metadata.Add(meta.Key, meta.Value);
             }
 
-            blockBlob.SetMetadataAsync();
+            if (storageSettings.IsMimeTypeResolverEnabled)
+            {
+                var contentType = storageSettings.MimeTypeResolver.GetMimeType(data);
+                blockBlob.Properties.ContentType = contentType;
+            }
 
-            var contentType = MimeTypes.GetMimeType(data);
-            blockBlob.Properties.ContentType = contentType;
-            blockBlob.SetPropertiesAsync();
+            blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
         }
 
         string GetSasContainerToken()
