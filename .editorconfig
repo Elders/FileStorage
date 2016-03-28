@@ -3,7 +3,7 @@
 ; Use with VisualStudio https://visualstudiogallery.msdn.microsoft.com/c8bccfe2-650c-4b42-bc5c-845e21f96328
 root = true
 
-; 4-column space indentation
+; 2-column space indentation
 [*]
 indent_style = space
 indent_size = 4
