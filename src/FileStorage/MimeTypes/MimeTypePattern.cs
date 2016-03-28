@@ -30,7 +30,9 @@ namespace FileStorage.MimeTypes
 
         public bool IsMatch(byte[] data)
         {
-            if (data.Skip(Offset).Take(Bytes.Length).SequenceEqual(Bytes))
+
+            if (data.Length >= Bytes.Length + Offset &&
+                data.Skip(Offset).Take(Bytes.Length).SequenceEqual(Bytes))
                 return true;
 
             return false;

@@ -3,13 +3,13 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitleAttribute("FileStorage")]
-[assembly: AssemblyDescriptionAttribute("FileStorage")]
+[assembly: AssemblyDescriptionAttribute("FileStorage Abstraction")]
 [assembly: ComVisibleAttribute(false)]
 [assembly: AssemblyProductAttribute("FileStorage")]
 [assembly: AssemblyCopyrightAttribute("Copyright ©  2016")]
 [assembly: AssemblyVersionAttribute("0.1.0.0")]
 [assembly: AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.1.0+13.Branch.master.Sha.ff7fc0505c6de4db204505d4435762e92d21c933")]
+[assembly: AssemblyInformationalVersionAttribute("0.1.0+14.Branch.master.Sha.6c3daf46a2bbdc92cb3dc84ff8e6fc6c369330ae")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const string Version = "0.1.0.0";
