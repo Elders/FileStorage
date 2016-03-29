@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using FileGenerator;
+using FileStorage.MimeTypes;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using FileStorage.Generators;
-using FileStorage.MimeTypes;
 
 namespace FileStorage.AzureStorage
 {

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using FileStorage.Extensions;
-using FileStorage.FileFormats;
-using FileStorage.Generators;
 using ImageResizer;
+using FileGenerator.FileFormats;
+using FileGenerator;
 
-namespace FileStorage.Client
+namespace FileStorage.Playground
 {
     public class MobileThumbnail : IFileFormat
     {

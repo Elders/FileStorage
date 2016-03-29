@@ -1,9 +1,9 @@
-﻿using System;
+﻿using FileGenerator;
+using FileGenerator.FileFormats;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FileStorage.FileFormats;
-using FileStorage.Generators;
 
 namespace FileStorage.LocalFileStorage
 {

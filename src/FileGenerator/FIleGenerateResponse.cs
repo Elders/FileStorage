@@ -1,4 +1,4 @@
-﻿namespace FileStorage.Generators
+﻿namespace FileGenerator
 {
     public class FIleGenerateResponse
     {

@@ -1,6 +1,4 @@
-﻿using FileStorage.Generators;
-
-namespace FileStorage.FileFormats
+﻿namespace FileGenerator.FileFormats
 {
     public interface IFileFormat
     {

@@ -5,9 +5,9 @@ using System.Net;
 using Amazon.CloudFront;
 using Amazon.S3;
 using Amazon.S3.Model;
+using FileGenerator;
+using FileGenerator.FileFormats;
 using FileStorage.Extensions;
-using FileStorage.FileFormats;
-using FileStorage.Generators;
 
 namespace FileStorage.S3Storage
 {
@@ -43,7 +43,7 @@ namespace FileStorage.S3Storage
 
             foreach (var meta in metaInfo)
             {
-                uploadRequest.Metadata.Add(meta.Key, meta.Value);
+                uploadRequest.Metadata.Add(meta.Key.Base64Encode(), meta.Value.Base64Encode());
             }
 
             storageSettings.Client.PutObjectAsync(uploadRequest);

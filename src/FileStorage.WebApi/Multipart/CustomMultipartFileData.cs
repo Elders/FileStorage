@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace FileStorage.Multipart
+namespace FileStorage.WebApi.Multipart
 {
     public class CustomMultipartFileData
     {

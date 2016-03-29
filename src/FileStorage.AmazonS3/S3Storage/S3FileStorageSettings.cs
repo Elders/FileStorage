@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using FileStorage.Generators;
+using FileGenerator;
 using FileStorage.MimeTypes;
 
 namespace FileStorage.S3Storage

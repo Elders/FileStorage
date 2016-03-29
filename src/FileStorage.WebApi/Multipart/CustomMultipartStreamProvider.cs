@@ -6,12 +6,11 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using FileGenerator;
+using FileGenerator.FileFormats;
 using FileStorage.Extensions;
-using FileStorage.FileFormats;
-using FileStorage.Generators;
-using FileStorage.Multipart;
 
-namespace FileStorage
+namespace FileStorage.WebApi.Multipart
 {
     public class CustomMultipartStreamProvider : MultipartStreamProvider
     {

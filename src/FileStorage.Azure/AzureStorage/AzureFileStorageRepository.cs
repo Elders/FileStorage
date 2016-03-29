@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using FileGenerator;
+using FileGenerator.FileFormats;
+using FileStorage.Extensions;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
-using FileStorage.Extensions;
-using FileStorage.FileFormats;
-using FileStorage.Generators;
 
 namespace FileStorage.AzureStorage
 {
@@ -96,7 +96,9 @@ namespace FileStorage.AzureStorage
 
             foreach (var meta in metaInfo)
             {
-                blockBlob.Metadata.Add(meta.Key, meta.Value);
+                // The supported characters in the blob metadata must be ASCII characters. 
+                // https://github.com/Azure/azure-sdk-for-net/issues/178
+                blockBlob.Metadata.Add(meta.Key.Base64Encode(), meta.Value.Base64Encode());
             }
 
             if (storageSettings.IsMimeTypeResolverEnabled)
@@ -106,6 +108,7 @@ namespace FileStorage.AzureStorage
             }
 
             blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
+
         }
 
         string GetSasContainerToken()
