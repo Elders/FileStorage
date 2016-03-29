@@ -53,7 +53,7 @@ SET TARGET="Build"
 
 IF NOT [%1]==[] (set TARGET="%1")
 
-SET SUMMARY="FileStorage"
-SET DESCRIPTION="FileStorage Abstraction"
+SET SUMMARY="FileStorage.FileGenerator"
+SET DESCRIPTION="FileStorage.FileGenerator"
 
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage appSummary=%SUMMARY% appDescription=%DESCRIPTION%
+%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.FileGenerator appSummary=%SUMMARY% appDescription=%DESCRIPTION%
