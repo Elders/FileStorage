@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using FileGenerator;
+using FileStorage.FileGenerator;
 using FileStorage.AzureStorage;
 using FileStorage.MimeTypes;
 

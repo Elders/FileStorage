@@ -43,10 +43,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FileGenerator\FileGenerator.csproj">
-      <Project>{673ccea3-16e5-4744-803c-2ec1f893880f}</Project>
-      <Name>FileGenerator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FileStorage.AmazonS3\FileStorage.AmazonS3.csproj">
       <Project>{375bd263-6fec-4873-a46c-54df6dad54f4}</Project>
       <Name>FileStorage.AmazonS3</Name>
@@ -54,6 +50,10 @@
     <ProjectReference Include="..\FileStorage.Azure\FileStorage.Azure.csproj">
       <Project>{08822344-bf80-43fd-8a72-e48b487c5305}</Project>
       <Name>FileStorage.Azure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileStorage.FileGenerator\FileStorage.FileGenerator.csproj">
+      <Project>{fa153944-bad8-416a-95b9-6b4e4ec7f24a}</Project>
+      <Name>FileStorage.FileGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileStorage.WebApi\FileStorage.WebApi.csproj">
       <Project>{83980dae-84e3-4718-a15a-c0be93e57736}</Project>

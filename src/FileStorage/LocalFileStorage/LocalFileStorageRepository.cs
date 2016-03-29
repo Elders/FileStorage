@@ -1,5 +1,5 @@
-﻿using FileGenerator;
-using FileGenerator.FileFormats;
+﻿using FileStorage.FileGenerator;
+using FileStorage.FileGenerator.FileFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -5,9 +5,9 @@ using System.Net;
 using Amazon.CloudFront;
 using Amazon.S3;
 using Amazon.S3.Model;
-using FileGenerator;
-using FileGenerator.FileFormats;
 using FileStorage.Extensions;
+using FileStorage.FileGenerator;
+using FileStorage.FileGenerator.FileFormats;
 
 namespace FileStorage.S3Storage
 {

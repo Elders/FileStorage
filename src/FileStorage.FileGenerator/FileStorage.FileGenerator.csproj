@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C2E2461E-0034-4318-AD49-BD9629662D87}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileStorage.Playground</RootNamespace>
-    <AssemblyName>FileStorage.Playground</AssemblyName>
+    <RootNamespace>FileStorage.FileGenerator</RootNamespace>
+    <AssemblyName>FileStorage.FileGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,42 +30,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImageResizer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MobileThumbnail.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="FileFormats\IFileFormat.cs" />
+    <Compile Include="FileFormats\Original.cs" />
+    <Compile Include="FIleGenerateResponse.cs" />
+    <Compile Include="FileGenerator.cs" />
+    <Compile Include="IFileGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FileGenerator\FileGenerator.csproj">
-      <Project>{673ccea3-16e5-4744-803c-2ec1f893880f}</Project>
-      <Name>FileGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage.AmazonS3\FileStorage.AmazonS3.csproj">
-      <Project>{375bd263-6fec-4873-a46c-54df6dad54f4}</Project>
-      <Name>FileStorage.AmazonS3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage.Azure\FileStorage.Azure.csproj">
-      <Project>{08822344-bf80-43fd-8a72-e48b487c5305}</Project>
-      <Name>FileStorage.Azure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage\FileStorage.csproj">
-      <Project>{852d2c62-e1f5-4302-8067-4ff0cc7f7c03}</Project>
-      <Name>FileStorage</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

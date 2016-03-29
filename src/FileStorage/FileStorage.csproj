@@ -53,9 +53,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FileGenerator\FileGenerator.csproj">
-      <Project>{673ccea3-16e5-4744-803c-2ec1f893880f}</Project>
-      <Name>FileGenerator</Name>
+    <ProjectReference Include="..\FileStorage.FileGenerator\FileStorage.FileGenerator.csproj">
+      <Project>{fa153944-bad8-416a-95b9-6b4e4ec7f24a}</Project>
+      <Name>FileStorage.FileGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

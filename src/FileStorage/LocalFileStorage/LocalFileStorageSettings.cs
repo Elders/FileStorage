@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using FileGenerator;
+using FileStorage.FileGenerator;
 
 
 namespace FileStorage.LocalFileStorage

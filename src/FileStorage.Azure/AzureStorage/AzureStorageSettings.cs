@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using FileGenerator;
+using FileStorage.FileGenerator;
 using FileStorage.MimeTypes;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;

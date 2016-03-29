@@ -1,5 +1,5 @@
 ﻿
-using FileGenerator;
+using FileStorage.FileGenerator;
 
 namespace FileStorage
 {

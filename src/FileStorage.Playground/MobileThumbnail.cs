@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using FileStorage.Extensions;
+using FileStorage.FileGenerator;
+using FileStorage.FileGenerator.FileFormats;
 using ImageResizer;
-using FileGenerator.FileFormats;
-using FileGenerator;
 
 namespace FileStorage.Playground
 {
