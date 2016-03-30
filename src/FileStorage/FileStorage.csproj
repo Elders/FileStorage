@@ -50,9 +50,6 @@
     <Compile Include="UrlExpiration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FileStorage.FileGenerator\FileStorage.FileGenerator.csproj">
       <Project>{fa153944-bad8-416a-95b9-6b4e4ec7f24a}</Project>
       <Name>FileStorage.FileGenerator</Name>
