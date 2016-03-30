@@ -15,7 +15,7 @@ namespace FileStorage.Playground
             generator.RegisterFormat(new MobileThumbnail());
 
             IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
-            IFileStorageRepository storage = Azure(generator, mimeTypeResolver);
+            IFileStorageRepository storage = InMemory(generator, mimeTypeResolver);
 
             var bytes = File.ReadAllBytes($@"E:\{fileName}");
             var contentType = new DefaultMimeTypeResolver().GetMimeType(bytes);
@@ -68,6 +68,16 @@ namespace FileStorage.Playground
                 .UseUrlExpiration(new UrlExpiration(120))
                 .UseMimeTypeResolver(mimeTypeResolver);
             var storage = new S3Storage.S3FileStorageRepository(settings);
+
+            return storage;
+        }
+
+        static IFileStorageRepository InMemory(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
+        {
+            var settings = new InMemoryFileStorage.InMemoryFileStorageSettings()
+                .UseFileGenerator(generator)
+                .UseMimeTypeResolver(mimeTypeResolver);
+            var storage = new InMemoryFileStorage.InMemoryFileStorageRepository(settings);
 
             return storage;
         }

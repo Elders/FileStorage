@@ -39,11 +39,9 @@ namespace FileStorage.LocalFileStorage
 
         public IFile Download(string fileName, string format = "original")
         {
-
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var uri = this.GetFileUri(fileName, format);
-
 
             if (string.IsNullOrEmpty(uri))
             {
