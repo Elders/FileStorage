@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2814330B-A295-4C8F-B99A-93AA2161D24A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E363470E-F7DC-40F6-82E1-8DAD51E63304}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileStorage.Playground</RootNamespace>
-    <AssemblyName>FileStorage.Playground</AssemblyName>
+    <RootNamespace>FileStorage.FileSystem</RootNamespace>
+    <AssemblyName>FileStorage.FileSystem</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,50 +29,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImageResizer, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageResizer.4.0.5\lib\net45\ImageResizer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MobileThumbnail.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="LocalFileStorageRepository.cs" />
+    <Compile Include="LocalFileStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FileStorage.AmazonS3\FileStorage.AmazonS3.csproj">
-      <Project>{375bd263-6fec-4873-a46c-54df6dad54f4}</Project>
-      <Name>FileStorage.AmazonS3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage.Azure\FileStorage.Azure.csproj">
-      <Project>{08822344-bf80-43fd-8a72-e48b487c5305}</Project>
-      <Name>FileStorage.Azure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FileStorage.FileGenerator\FileStorage.FileGenerator.csproj">
       <Project>{fa153944-bad8-416a-95b9-6b4e4ec7f24a}</Project>
       <Name>FileStorage.FileGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage.FileSystem\FileStorage.FileSystem.csproj">
-      <Project>{e363470e-f7dc-40f6-82e1-8dad51e63304}</Project>
-      <Name>FileStorage.FileSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileStorage.WebApi\FileStorage.WebApi.csproj">
-      <Project>{83980dae-84e3-4718-a15a-c0be93e57736}</Project>
-      <Name>FileStorage.WebApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileStorage\FileStorage.csproj">
       <Project>{852d2c62-e1f5-4302-8067-4ff0cc7f7c03}</Project>
       <Name>FileStorage</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

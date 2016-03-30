@@ -15,7 +15,7 @@ namespace FileStorage.Playground
             generator.RegisterFormat(new MobileThumbnail());
 
             IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
-            IFileStorageRepository storage = InMemory(generator, mimeTypeResolver);
+            IFileStorageRepository storage = FileSystem(generator, mimeTypeResolver);
 
             var bytes = File.ReadAllBytes($@"E:\{fileName}");
             var contentType = new DefaultMimeTypeResolver().GetMimeType(bytes);
@@ -78,6 +78,16 @@ namespace FileStorage.Playground
                 .UseFileGenerator(generator)
                 .UseMimeTypeResolver(mimeTypeResolver);
             var storage = new InMemoryFileStorage.InMemoryFileStorageRepository(settings);
+
+            return storage;
+        }
+
+        static IFileStorageRepository FileSystem(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
+        {
+            var path = @"E:\kv";
+            var settings = new FileSystem.FileSystemFileStorageSettings(path)
+                .UseFileGenerator(generator);
+            var storage = new FileSystem.FileSystemFileStorageRepository(settings);
 
             return storage;
         }

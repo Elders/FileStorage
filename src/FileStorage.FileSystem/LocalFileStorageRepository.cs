@@ -1,17 +1,17 @@
-﻿using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FileStorage.FileGenerator;
+using FileStorage.FileGenerator.FileFormats;
 
-namespace FileStorage.LocalFileStorage
+namespace FileStorage.FileSystem
 {
-    public class LocalFileStorageRepository : IFileStorageRepository
+    public class FileSystemFileStorageRepository : IFileStorageRepository
     {
-        readonly LocalFileStorageSettings storageSettings;
+        readonly FileSystemFileStorageSettings storageSettings;
 
-        public LocalFileStorageRepository(LocalFileStorageSettings storageSettings)
+        public FileSystemFileStorageRepository(FileSystemFileStorageSettings storageSettings)
         {
             if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
             this.storageSettings = storageSettings;

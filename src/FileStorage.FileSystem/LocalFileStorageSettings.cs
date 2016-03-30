@@ -3,21 +3,23 @@ using System.IO;
 using FileStorage.FileGenerator;
 
 
-namespace FileStorage.LocalFileStorage
+namespace FileStorage.FileSystem
 {
-    public class LocalFileStorageSettings : IFileStorageSettings<LocalFileStorageSettings>
+    public class FileSystemFileStorageSettings : IFileStorageSettings<FileSystemFileStorageSettings>
     {
         public string StorageFolder { get; private set; }
         public IFileGenerator Generator { get; private set; }
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
 
-        public LocalFileStorageSettings(string storageFolder)
+        public FileSystemFileStorageSettings(string storageFolder)
         {
             if (Directory.Exists(storageFolder) == false)
                 Directory.CreateDirectory(storageFolder);
+
+            StorageFolder = storageFolder;
         }
 
-        public LocalFileStorageSettings UseFileGenerator(IFileGenerator generator)
+        public FileSystemFileStorageSettings UseFileGenerator(IFileGenerator generator)
         {
             if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
             Generator = generator;

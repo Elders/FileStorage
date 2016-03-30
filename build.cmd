@@ -3,11 +3,6 @@
 SETLOCAL
 
 SET NUGET=%LocalAppData%\NuGet\NuGet.exe
-@echo off
-
-SETLOCAL
-
-SET NUGET=%LocalAppData%\NuGet\NuGet.exe
 SET FAKE=%LocalAppData%\FAKE\tools\Fake.exe
 SET NYX=%LocalAppData%\Nyx\tools\build.fsx
 SET GITVERSION=%LocalAppData%\GitVersion.CommandLine\tools\GitVersion.exe
@@ -56,4 +51,4 @@ IF NOT [%1]==[] (set TARGET="%1")
 SET SUMMARY="FileStorage.FileGenerator"
 SET DESCRIPTION="FileStorage.FileGenerator"
 
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.FileGenerator appSummary=%SUMMARY% appDescription=%DESCRIPTION%
+%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.FileGenerator appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY% appDescription=%DESCRIPTION%

@@ -45,8 +45,6 @@
     <Compile Include="IFile.cs" />
     <Compile Include="IFileStorageRepository.cs" />
     <Compile Include="LocalFile.cs" />
-    <Compile Include="LocalFileStorage\LocalFileStorageRepository.cs" />
-    <Compile Include="LocalFileStorage\LocalFileStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IFileStorageSettings.cs" />
     <Compile Include="UrlExpiration.cs" />
