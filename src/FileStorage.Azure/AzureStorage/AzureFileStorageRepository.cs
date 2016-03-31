@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using FileStorage.Extensions;
 using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
+using FileStorage.FileFormats;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;

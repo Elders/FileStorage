@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
+using FileStorage.FileFormats;
 using FileStorage.Extensions;
 
 namespace FileStorage.WebApi.Multipart

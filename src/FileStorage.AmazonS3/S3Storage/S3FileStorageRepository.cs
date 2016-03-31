@@ -7,7 +7,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using FileStorage.Extensions;
 using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
+using FileStorage.FileFormats;
 
 namespace FileStorage.S3Storage
 {

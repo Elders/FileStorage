@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
+using FileStorage.FileFormats;
 
 namespace FileStorage.FileSystem
 {

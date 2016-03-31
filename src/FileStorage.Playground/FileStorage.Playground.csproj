@@ -54,10 +54,6 @@
       <Project>{08822344-bf80-43fd-8a72-e48b487c5305}</Project>
       <Name>FileStorage.Azure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FileStorage.FileGenerator\FileStorage.FileGenerator.csproj">
-      <Project>{fa153944-bad8-416a-95b9-6b4e4ec7f24a}</Project>
-      <Name>FileStorage.FileGenerator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FileStorage.FileSystem\FileStorage.FileSystem.csproj">
       <Project>{e363470e-f7dc-40f6-82e1-8dad51e63304}</Project>
       <Name>FileStorage.FileSystem</Name>

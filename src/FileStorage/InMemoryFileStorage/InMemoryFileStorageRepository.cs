@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using FileStorage.FileGenerator;
-using FileStorage.FileGenerator.FileFormats;
+using FileStorage.FileFormats;
 using FileStorage.Extensions;
 
 namespace FileStorage.InMemoryFileStorage

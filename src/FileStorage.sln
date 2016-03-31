@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.WebApi", "FileS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Playground", "FileStorage.Playground\FileStorage.Playground.csproj", "{2814330B-A295-4C8F-B99A-93AA2161D24A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.FileGenerator", "FileStorage.FileGenerator\FileStorage.FileGenerator.csproj", "{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.FileSystem", "FileStorage.FileSystem\FileStorage.FileSystem.csproj", "{E363470E-F7DC-40F6-82E1-8DAD51E63304}"
 EndProject
 Global
@@ -51,10 +49,6 @@ Global
 		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA153944-BAD8-416A-95B9-6B4E4EC7F24A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Release|Any CPU.ActiveCfg = Release|Any CPU
