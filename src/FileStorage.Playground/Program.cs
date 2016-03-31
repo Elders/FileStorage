@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using FileStorage.AmazonS3;
-using FileStorage.AzureStorage;
 using FileStorage.MimeTypes;
+using FileStorage.Azure;
 
 namespace FileStorage.Playground
 {

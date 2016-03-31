@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using FileStorage.FileGenerator;
 using FileStorage.MimeTypes;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace FileStorage.AzureStorage
+namespace FileStorage.Azure
 {
     public class AzureStorageSettings : IFileStorageSettings<AzureStorageSettings>
     {

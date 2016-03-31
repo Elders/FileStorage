@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using FileStorage.Extensions;
-using FileStorage.FileGenerator;
 using FileStorage.FileFormats;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
-namespace FileStorage.AzureStorage
+namespace FileStorage.Azure
 {
     public class AzureFileStorageRepository : IFileStorageRepository
     {

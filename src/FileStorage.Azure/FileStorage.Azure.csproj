@@ -61,8 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureStorage\AzureFileStorageRepository.cs" />
-    <Compile Include="AzureStorage\AzureStorageSettings.cs" />
+    <Compile Include="AzureFileStorageRepository.cs" />
+    <Compile Include="AzureStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
