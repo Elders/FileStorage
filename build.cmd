@@ -48,7 +48,14 @@ SET TARGET="Build"
 
 IF NOT [%1]==[] (set TARGET="%1")
 
-SET SUMMARY="FileStorage"
-SET DESCRIPTION="FileStorage"
+SET SUMMARY_S3="AmazonS3 FileStorage"
+SET SUMMARY_AZURE="Azure FileStorage"
+SET SUMMARY_FILESYSTEM="FileSystem FileStorage"
 
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY% appDescription=%DESCRIPTION%
+SET DESCRIPTION_S3="AmazonS3 FileStorage"
+SET DESCRIPTION_AZURE="Azure FileStorage"
+SET DESCRIPTION_FILESYSTEM="FileSystem FileStorage"
+
+%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.AmazonS3 appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_S3% appDescription=%DESCRIPTION_S3% nugetPackageName=FileStorage.AmazonS3
+%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.Azure appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_AZURE% appDescription=%DESCRIPTION_AZURE% nugetPackageName=FileStorage.Azure
+%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.FileSystem appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_FILESYSTEM% appDescription=%DESCRIPTION_FILESYSTEM% nugetPackageName=FileStorage.FileSystem
