@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using FileStorage.FileGenerator;
+using FileStorage.AmazonS3;
 using FileStorage.AzureStorage;
 using FileStorage.MimeTypes;
 
@@ -63,11 +63,11 @@ namespace FileStorage.Playground
             var region = string.Empty;
             var bucketName = string.Empty;
 
-            var settings = new S3Storage.S3FileStorageSettings(accessKey, secretKey, region, bucketName)
+            var settings = new S3FileStorageSettings(accessKey, secretKey, region, bucketName)
                 .UseFileGenerator(generator)
                 .UseUrlExpiration(new UrlExpiration(120))
                 .UseMimeTypeResolver(mimeTypeResolver);
-            var storage = new S3Storage.S3FileStorageRepository(settings);
+            var storage = new S3FileStorageRepository(settings);
 
             return storage;
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FileStorage.S3Storage
+namespace FileStorage.AmazonS3
 {
     public class CloudFrontSettings
     {

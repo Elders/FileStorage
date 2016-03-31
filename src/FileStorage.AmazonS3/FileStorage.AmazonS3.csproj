@@ -38,9 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S3Storage\CloudFrontSettings.cs" />
-    <Compile Include="S3Storage\S3FileStorageRepository.cs" />
-    <Compile Include="S3Storage\S3FileStorageSettings.cs" />
+    <Compile Include="CloudFrontSettings.cs" />
+    <Compile Include="S3FileStorageRepository.cs" />
+    <Compile Include="S3FileStorageSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileStorage\FileStorage.csproj">

@@ -6,10 +6,9 @@ using Amazon.CloudFront;
 using Amazon.S3;
 using Amazon.S3.Model;
 using FileStorage.Extensions;
-using FileStorage.FileGenerator;
 using FileStorage.FileFormats;
 
-namespace FileStorage.S3Storage
+namespace FileStorage.AmazonS3
 {
     public class S3FileStorageRepository : IFileStorageRepository
     {

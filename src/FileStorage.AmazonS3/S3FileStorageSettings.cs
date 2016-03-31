@@ -3,10 +3,9 @@ using System.Text.RegularExpressions;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using FileStorage.FileGenerator;
 using FileStorage.MimeTypes;
 
-namespace FileStorage.S3Storage
+namespace FileStorage.AmazonS3
 {
     public class S3FileStorageSettings : IFileStorageSettings<S3FileStorageSettings>
     {
