@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using FileStorage.FileGenerator;
-using FileStorage.FileFormats;
 using FileStorage.Extensions;
+using FileStorage.FileFormats;
 
 namespace FileStorage.InMemoryFileStorage
 {

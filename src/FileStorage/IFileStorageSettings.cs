@@ -1,7 +1,4 @@
-﻿
-using FileStorage.FileGenerator;
-
-namespace FileStorage
+﻿namespace FileStorage
 {
     public interface IFileStorageSettings<T>
     {

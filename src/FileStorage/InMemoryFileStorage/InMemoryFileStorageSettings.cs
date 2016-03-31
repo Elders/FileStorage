@@ -1,5 +1,4 @@
 ﻿using System;
-using FileStorage.FileGenerator;
 using FileStorage.MimeTypes;
 
 namespace FileStorage.InMemoryFileStorage

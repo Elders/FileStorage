@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FileStorage.FileGenerator;
 using FileStorage.FileFormats;
 
 namespace FileStorage.FileSystem
