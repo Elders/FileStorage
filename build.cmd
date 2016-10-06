@@ -51,6 +51,8 @@ echo Downloading latest version of Nyx...
 IF NOT [%1]==[] (set RELEASE_NUGETKEY="%1")
 IF NOT [%2]==[] (set RELEASE_TARGETSOURCE="%2")
 
+SET RELEASE_NOTES=RELEASE_NOTES.md
+
 SET SUMMARY_S3="AmazonS3 FileStorage"
 SET SUMMARY_AZURE="Azure FileStorage"
 SET SUMMARY_FILESYSTEM="FileSystem FileStorage"
@@ -59,8 +61,8 @@ SET DESCRIPTION_S3="AmazonS3 FileStorage"
 SET DESCRIPTION_AZURE="Azure FileStorage"
 SET DESCRIPTION_FILESYSTEM="FileSystem FileStorage"
 
-%FAKE% %NYX% appName=FileStorage.AmazonS3 appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_S3% appDescription=%DESCRIPTION_S3% nugetPackageName=FileStorage.AmazonS3 nugetkey=%RELEASE_NUGETKEY%
-%FAKE% %NYX% appName=FileStorage.Azure appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_AZURE% appDescription=%DESCRIPTION_AZURE% nugetPackageName=FileStorage.Azure nugetkey=%RELEASE_NUGETKEY%
-%FAKE% %NYX% appName=FileStorage.FileSystem appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_FILESYSTEM% appDescription=%DESCRIPTION_FILESYSTEM% nugetPackageName=FileStorage.FileSystem nugetkey=%RELEASE_NUGETKEY%
+%FAKE% %NYX% appName=FileStorage.AmazonS3 appReleaseNotes=%RELEASE_NOTES% appSummary=%SUMMARY_S3% appDescription=%DESCRIPTION_S3% nugetPackageName=FileStorage.AmazonS3 nugetkey=%RELEASE_NUGETKEY%
+%FAKE% %NYX% appName=FileStorage.Azure appReleaseNotes=%RELEASE_NOTES% appSummary=%SUMMARY_AZURE% appDescription=%DESCRIPTION_AZURE% nugetPackageName=FileStorage.Azure nugetkey=%RELEASE_NUGETKEY%
+%FAKE% %NYX% appName=FileStorage.FileSystem appReleaseNotes=%RELEASE_NOTES% appSummary=%SUMMARY_FILESYSTEM% appDescription=%DESCRIPTION_FILESYSTEM% nugetPackageName=FileStorage.FileSystem nugetkey=%RELEASE_NUGETKEY%
 
 IF NOT [%1]==[] (%FAKE% %NYX% "target=Release" -st appReleaseNotes=%RELEASE_NOTES%)

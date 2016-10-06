@@ -1,6 +1,5 @@
-* Adds AzureStorageSettings
-
 #### 0.1.2 - 06.10.2016
+* Updates build script
 * Adds AzureStorageSettings
 
 #### 0.1.1 - 31.03.2016
