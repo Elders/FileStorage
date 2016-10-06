@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureCacheControlExpiration.cs" />
     <Compile Include="AzureFileStorageRepository.cs" />
     <Compile Include="AzureStorageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

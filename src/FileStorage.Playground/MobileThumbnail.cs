@@ -3,6 +3,7 @@ using FileStorage.Extensions;
 using FileStorage.FileGenerator;
 using FileStorage.FileFormats;
 using ImageResizer;
+using System;
 
 namespace FileStorage.Playground
 {
@@ -29,11 +30,11 @@ namespace FileStorage.Playground
             {
                 var result = ImageResizer.ImageBuilder.Current.Build(job);
             }
-            catch (ImageCorruptedException)
+            catch (Exception ex)
             {
                 //log.Error(ex);
 
-                return null;
+                return new FIleGenerateResponse(false, null, ex.Message);
             }
 
             if (newStream.Length > 0)

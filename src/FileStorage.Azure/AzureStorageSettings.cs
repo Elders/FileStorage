@@ -10,6 +10,7 @@ namespace FileStorage.Azure
     {
         public CloudBlobContainer Container { get; private set; }
         public UrlExpiration UrlExpiration { get; set; }
+        public AzureCacheControlExpiration CacheControlExpiration { get; set; }
         public string CdnUrl { get; private set; }
         public IFileGenerator Generator { get; private set; }
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
@@ -34,12 +35,26 @@ namespace FileStorage.Azure
             Container.CreateIfNotExists();
 
             UseUrlExpiration(new UrlExpiration());
+            UseCacheControlExpiration(new AzureCacheControlExpiration());
         }
 
+
+        /// <summary>
+        /// Not working for URLs with CDN
+        /// </summary>
+        /// <param name="expiration"></param>
+        /// <returns></returns>
         public AzureStorageSettings UseUrlExpiration(UrlExpiration expiration)
         {
             if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
             UrlExpiration = expiration;
+            return this;
+        }
+
+        public AzureStorageSettings UseCacheControlExpiration(AzureCacheControlExpiration expiration)
+        {
+            if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
+            CacheControlExpiration = expiration;
             return this;
         }
 

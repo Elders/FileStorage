@@ -36,22 +36,6 @@ namespace FileStorage.Azure
                     return new LocalFile(memoryStream.ToByteArray(), fileName);
                 }
             }
-
-            catch (StorageException ex)
-            {
-                if (ex.RequestInformation.ExtendedErrorInformation.ErrorCode == StorageErrorCodeStrings.ResourceNotFound && format != Original.FormatName)
-                {
-                    if (storageSettings.IsGenerationEnabled == true)
-                    {
-                        var file = storageSettings.Generator.Generate(Download(fileName).Data, format);
-                        return new LocalFile(file.Data, fileName);
-                    }
-
-                    throw new FileNotFoundException($"File not found. Plugin in {typeof(IFileGenerator)} to generate it.");
-                }
-
-                throw ex;
-            }
             catch (Exception ex)
             {
                 throw ex;
@@ -105,6 +89,8 @@ namespace FileStorage.Azure
                 var contentType = storageSettings.MimeTypeResolver.GetMimeType(data);
                 blockBlob.Properties.ContentType = contentType;
             }
+
+            blockBlob.Properties.CacheControl = storageSettings.CacheControlExpiration.CacheControlHeader;
 
             blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
 
