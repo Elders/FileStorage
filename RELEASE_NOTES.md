@@ -1,4 +1,3 @@
-#### 0.1.3 - 06.10.2016
 * Adds AzureStorageSettings
 
 #### 0.1.2 - 06.10.2016

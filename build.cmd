@@ -44,9 +44,12 @@ IF NOT EXIST %LocalAppData%\GitVersion.CommandLine %NUGET% "install" "GitVersion
 echo Downloading latest version of Nyx...
 %NUGET% "install" "Nyx" "-OutputDirectory" "%LocalAppData%" "-ExcludeVersion" "-PreRelease"
 
-SET TARGET="Build"
+%FAKE% %NYX% "target=clean" -st
+%FAKE% %NYX% "target=RestoreNugetPackages" -st
+%FAKE% %NYX% "target=RestoreBowerPackages" -st
 
-IF NOT [%1]==[] (set TARGET="%1")
+IF NOT [%1]==[] (set RELEASE_NUGETKEY="%1")
+IF NOT [%2]==[] (set RELEASE_TARGETSOURCE="%2")
 
 SET SUMMARY_S3="AmazonS3 FileStorage"
 SET SUMMARY_AZURE="Azure FileStorage"
@@ -56,6 +59,8 @@ SET DESCRIPTION_S3="AmazonS3 FileStorage"
 SET DESCRIPTION_AZURE="Azure FileStorage"
 SET DESCRIPTION_FILESYSTEM="FileSystem FileStorage"
 
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.AmazonS3 appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_S3% appDescription=%DESCRIPTION_S3% nugetPackageName=FileStorage.AmazonS3
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.Azure appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_AZURE% appDescription=%DESCRIPTION_AZURE% nugetPackageName=FileStorage.Azure
-%FAKE% %NYX% "target=%TARGET%" appName=FileStorage.FileSystem appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_FILESYSTEM% appDescription=%DESCRIPTION_FILESYSTEM% nugetPackageName=FileStorage.FileSystem
+%FAKE% %NYX% appName=FileStorage.AmazonS3 appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_S3% appDescription=%DESCRIPTION_S3% nugetPackageName=FileStorage.AmazonS3 nugetkey=%RELEASE_NUGETKEY%
+%FAKE% %NYX% appName=FileStorage.Azure appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_AZURE% appDescription=%DESCRIPTION_AZURE% nugetPackageName=FileStorage.Azure nugetkey=%RELEASE_NUGETKEY%
+%FAKE% %NYX% appName=FileStorage.FileSystem appReleaseNotes=RELEASE_NOTES.md appSummary=%SUMMARY_FILESYSTEM% appDescription=%DESCRIPTION_FILESYSTEM% nugetPackageName=FileStorage.FileSystem nugetkey=%RELEASE_NUGETKEY%
+
+IF NOT [%1]==[] (%FAKE% %NYX% "target=Release" -st appReleaseNotes=%RELEASE_NOTES%)
