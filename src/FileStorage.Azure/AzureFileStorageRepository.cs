@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
 using Microsoft.WindowsAzure.Storage;
@@ -79,9 +80,9 @@ namespace FileStorage.Azure
 
             foreach (var meta in metaInfo)
             {
-                // The supported characters in the blob metadata must be ASCII characters. 
+                // The supported characters in the blob metadata must be ASCII characters.
                 // https://github.com/Azure/azure-sdk-for-net/issues/178
-                blockBlob.Metadata.Add(meta.Key.Base64Encode(), meta.Value.Base64Encode());
+                blockBlob.Metadata.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
             }
 
             if (storageSettings.IsMimeTypeResolverEnabled)
@@ -93,7 +94,6 @@ namespace FileStorage.Azure
             blockBlob.Properties.CacheControl = storageSettings.CacheControlExpiration.CacheControlHeader;
 
             blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
-
         }
 
         string GetSasContainerToken()

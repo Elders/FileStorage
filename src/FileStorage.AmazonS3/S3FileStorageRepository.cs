@@ -42,7 +42,7 @@ namespace FileStorage.AmazonS3
 
             foreach (var meta in metaInfo)
             {
-                uploadRequest.Metadata.Add(meta.Key.Base64Encode(), meta.Value.Base64Encode());
+                uploadRequest.Metadata.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
             }
 
             storageSettings.Client.PutObjectAsync(uploadRequest);

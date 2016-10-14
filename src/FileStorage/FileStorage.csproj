@@ -33,7 +33,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FileFormats\IFileFormat.cs" />
     <Compile Include="FileFormats\Original.cs" />
     <Compile Include="FIleGenerateResponse.cs" />

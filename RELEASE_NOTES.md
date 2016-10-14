@@ -1,3 +1,6 @@
+#### 0.1.3 - 14.10.2016
+* Updates encoding of meta data key/value from Base64Encode to Uri.EscapeUriString
+
 #### 0.1.2 - 06.10.2016
 * Updates build script
 * Adds AzureStorageSettings

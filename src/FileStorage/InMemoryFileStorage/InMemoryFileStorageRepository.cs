@@ -66,7 +66,7 @@ namespace FileStorage.InMemoryFileStorage
             var metaDictionary = new Dictionary<string, string>();
             foreach (var meta in metaInfo)
             {
-                metaDictionary.Add(meta.Key.Base64Encode(), meta.Value.Base64Encode());
+                metaDictionary.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
             }
 
             var contentType = string.Empty;
