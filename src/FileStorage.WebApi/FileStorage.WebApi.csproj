@@ -43,8 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Multipart\CustomMultipartFileData.cs" />
+    <Compile Include="Multipart\BigFilesMultipartStreamProvider.cs" />
     <Compile Include="Multipart\CustomMultipartStreamProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -54,6 +54,9 @@
       <Project>{852d2c62-e1f5-4302-8067-4ff0cc7f7c03}</Project>
       <Name>FileStorage</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

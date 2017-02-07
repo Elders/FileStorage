@@ -147,5 +147,10 @@ namespace FileStorage.AmazonS3
 
             return this;
         }
+
+        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using FileStorage.Extensions;
 using FileStorage.FileFormats;
 
 namespace FileStorage.InMemoryFileStorage
@@ -53,6 +52,11 @@ namespace FileStorage.InMemoryFileStorage
         {
             var key = GetKey(fileName, format);
             return storage.ContainsKey(key) ? key : string.Empty;
+        }
+
+        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        {
+            throw new NotImplementedException();
         }
 
         public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")

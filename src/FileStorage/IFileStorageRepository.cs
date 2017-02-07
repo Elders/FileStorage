@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace FileStorage
 {
@@ -11,5 +12,6 @@ namespace FileStorage
         IFile Download(string fileName, string format = "original");
         string GetFileUri(string fileName, string format = "original");
         bool FileExists(string fileName, string format = "original");
+        Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original");
     }
 }

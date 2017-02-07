@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using FileStorage.Extensions;
-using FileStorage.FileFormats;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
 namespace FileStorage.Azure
 {
@@ -41,7 +37,6 @@ namespace FileStorage.Azure
             {
                 throw ex;
             }
-
         }
 
         public bool FileExists(string fileName, string format = "original")
@@ -94,6 +89,14 @@ namespace FileStorage.Azure
             blockBlob.Properties.CacheControl = storageSettings.CacheControlExpiration.CacheControlHeader;
 
             blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
+        }
+
+        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
+
+            return new AzureFileStorageStream(storageSettings, fileName, metaInfo, format);
         }
 
         string GetSasContainerToken()

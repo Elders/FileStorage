@@ -16,10 +16,13 @@ namespace FileStorage.Azure
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
         public IMimeTypeResolver MimeTypeResolver { get; private set; }
         public bool IsMimeTypeResolverEnabled { get { return ReferenceEquals(MimeTypeResolver, null) == false; } }
+        public int BlockSizeInKB { get; private set; }
 
         readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
-        public AzureStorageSettings(string connectionString, string containerName)
+        int maxBlockSize = 1024 * 1024 * 4;
+
+        public AzureStorageSettings(string connectionString, string containerName, int blockSizeInKB)
         {
             if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException(nameof(connectionString));
             if (containerRegex.IsMatch(containerName) == false) throw new FormatException("Not supported Azure container name. Check https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/");
@@ -36,6 +39,9 @@ namespace FileStorage.Azure
 
             UseUrlExpiration(new UrlExpiration());
             UseCacheControlExpiration(new AzureCacheControlExpiration());
+
+            BlockSizeInKB = 1024 * blockSizeInKB;
+            if (blockSizeInKB > BlockSizeInKB) throw new ArgumentException("Block size can not be more than 4mb");
         }
 
 

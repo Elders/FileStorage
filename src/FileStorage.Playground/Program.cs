@@ -47,7 +47,7 @@ namespace FileStorage.Playground
             var connectionString = string.Empty;
             var containerName = string.Empty;
 
-            var settings = new AzureStorageSettings(connectionString, containerName)
+            var settings = new AzureStorageSettings(connectionString, containerName, 1024 * 4)
                 .UseFileGenerator(generator)
                 .UseUrlExpiration(new UrlExpiration(120))
                 .UseMimeTypeResolver(mimeTypeResolver);

@@ -1,3 +1,6 @@
+#### 0.1.4 - 07.02.2017
+* Add support for big files in Azure CDN.
+
 #### 0.1.3 - 14.10.2016
 * Updates encoding of meta data key/value from Base64Encode to Uri.EscapeUriString
 
