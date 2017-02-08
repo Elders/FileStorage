@@ -1,3 +1,6 @@
+#### 0.1.5 - 07.02.2017
+* Fix GinormousFilesMultipartStreamProvider
+
 #### 0.1.4 - 07.02.2017
 * Add support for big files in Azure CDN.
 

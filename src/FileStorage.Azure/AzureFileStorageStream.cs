@@ -128,6 +128,7 @@ namespace FileStorage.Azure
 
         protected override void Dispose(bool disposing)
         {
+            Flush();
             blockBlob.PutBlockList(blockDataList);
             s.Dispose();
             base.Dispose(disposing);

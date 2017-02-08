@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Multipart\CustomMultipartFileData.cs" />
-    <Compile Include="Multipart\BigFilesMultipartStreamProvider.cs" />
+    <Compile Include="Multipart\GinormousFilesMultipartStreamProvider.cs" />
     <Compile Include="Multipart\CustomMultipartStreamProvider.cs" />
   </ItemGroup>
   <ItemGroup>

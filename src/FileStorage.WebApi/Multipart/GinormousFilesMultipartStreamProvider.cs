@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FileStorage.WebApi.Multipart
 {
-    public class BigFilesMultipartStreamProvider : MultipartStreamProvider
+    public class GinormousFilesMultipartStreamProvider : MultipartStreamProvider
     {
         readonly IFileStorageRepository repository;
         readonly IFileGenerator generator;
@@ -17,7 +17,7 @@ namespace FileStorage.WebApi.Multipart
         readonly List<CustomMultipartFileData> fileContents = new List<CustomMultipartFileData>();
         readonly Collection<bool> isFormData = new Collection<bool>();
 
-        public BigFilesMultipartStreamProvider(IFileStorageRepository repository, IFileGenerator generator)
+        public GinormousFilesMultipartStreamProvider(IFileStorageRepository repository, IFileGenerator generator)
         {
             if (ReferenceEquals(repository, null) == true) throw new ArgumentNullException(nameof(repository));
             if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
@@ -69,10 +69,6 @@ namespace FileStorage.WebApi.Multipart
                     HttpContent formContent = Contents[index];
 
                     ContentDispositionHeaderValue contentDisposition = formContent.Headers.ContentDisposition;
-
-                    var stream = formContent.ReadAsStreamAsync().Result;
-                    stream.Flush();
-                    stream.Dispose();
 
                     this.fileContents.Add(new CustomMultipartFileData(formContent.Headers, contentDisposition.FileName));
                 }
