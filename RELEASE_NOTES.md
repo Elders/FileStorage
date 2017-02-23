@@ -1,3 +1,6 @@
+#### 0.1.6 - 23.02.2017
+* Adds support for ftyp mp42 mp41 mp42isom
+
 #### 0.1.5 - 07.02.2017
 * Fix GinormousFilesMultipartStreamProvider
 

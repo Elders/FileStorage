@@ -30,6 +30,7 @@ namespace FileStorage.MimeTypes
                 new MimeTypeMapper( "SEVEN_ZIP", "application/x-7z-compressed", new MimeTypePattern( new byte[] { 55, 122 } )),
 
                 // http://www.garykessler.net/library/file_sigs.html
+                // http://string-functions.com/hex-string.aspx
                 new MimeTypeMapper( "AVI", "video/x-msvideo", new MimeTypePattern("52 49 46 46" )),
                 new MimeTypeMapper( "AVI", "video/x-msvideo", new MimeTypePattern("41 56 49 20 4C 49 53 54" )),
                 new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern( "66 74 79 70 33 67 70 35", 4) ),
@@ -37,6 +38,7 @@ namespace FileStorage.MimeTypes
                 new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern("00 00 00 14 66 74 79 70 69 73 6F 6D") ),
                 new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern("00 00 00 18 66 74 79 70 33 67 70 35") ),
                 new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern("00 00 00 1C 66 74 79 70 4D 53 4E 56 01 29 00 46 4D 53 4E 56 6D 70 34 32" )),
+                new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern("00 00 00 1C 66 74 79 70 6D 70 34 32 00 00 00 01 6D 70 34 31 6D 70 34 32 69 73 6F 6D 00 00")),  // ftypmp?42mp41?mp42isom | https://en.wikipedia.org/wiki/ISO_base_media_file_format
                 new MimeTypeMapper( "MP4", "video/mp4", new MimeTypePattern("66 74 79 70 69 73 6F 6D", 4)),
                 new MimeTypeMapper( "ASF_WMV", "video/x-ms-wmv", new MimeTypePattern("30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C" )),
                 new MimeTypeMapper( "MPG", "video/mpeg", new MimeTypePattern("00 00 01 B3" )),
