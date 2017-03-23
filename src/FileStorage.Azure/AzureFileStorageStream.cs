@@ -9,6 +9,7 @@ namespace FileStorage.Azure
     {
         long index = 0;
         long lenght = 0;
+        int blockSize = 0;
         List<string> blockDataList;
         AzureStorageSettings storageSettings;
         CloudBlockBlob blockBlob;
@@ -20,7 +21,7 @@ namespace FileStorage.Azure
             this.storageSettings = storageSettings;
             this.s = new MemoryStream();
             this.blockBlob = storageSettings.Container.GetBlockBlobReference(format + "/" + fileName);
-
+            this.blockSize = storageSettings.BlockSizeInKB * 1000;
             foreach (var meta in metaInfo)
             {
                 // The supported characters in the blob metadata must be ASCII characters.
@@ -115,11 +116,11 @@ namespace FileStorage.Azure
                 uploadStream.Position = 0;
                 while (uploadStream.Position < uploadStream.Length)
                 {
-                    var chunk = new byte[storageSettings.BlockSizeInKB - s.Position];
+                    var chunk = new byte[this.blockSize - s.Position];
                     var readBytes = uploadStream.Read(chunk, 0, chunk.Length);
                     s.Write(chunk, 0, readBytes);
 
-                    if (s.Position >= storageSettings.BlockSizeInKB)
+                    if (s.Position >= this.blockSize)
                         Flush();
                 }
             }
