@@ -11,7 +11,6 @@ namespace FileStorage.Azure
         long lenght = 0;
         List<string> blockDataList;
         AzureStorageSettings storageSettings;
-        string contentType;
         CloudBlockBlob blockBlob;
         MemoryStream s;
 
@@ -71,7 +70,7 @@ namespace FileStorage.Azure
         {
             if (s.Length > 0)
             {
-                if (string.IsNullOrEmpty(contentType))
+                if (storageSettings.IsMimeTypeResolverEnabled && string.IsNullOrEmpty(blockBlob.Properties.ContentType))
                 {
                     using (var mimeBytes = new MemoryStream())
                     {
@@ -79,7 +78,7 @@ namespace FileStorage.Azure
                         s.Position = 0;
                         s.CopyTo(mimeBytes, 100);
                         mimeBytes.Position = 0;
-                        contentType = storageSettings.MimeTypeResolver.GetMimeType(mimeBytes.ToArray());
+                        blockBlob.Properties.ContentType = storageSettings.MimeTypeResolver.GetMimeType(mimeBytes.ToArray());
                         s.Position = prev;
                     }
                 }

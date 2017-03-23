@@ -20,7 +20,7 @@ namespace FileStorage.Azure
 
         readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
-        int maxBlockSize = 1024 * 1024 * 4;
+        int maxBlockSize = 4000;
 
         public AzureStorageSettings(string connectionString, string containerName, int blockSizeInKB)
         {
@@ -37,11 +37,11 @@ namespace FileStorage.Azure
             if (ReferenceEquals(Container, null) == true) throw new ArgumentNullException(nameof(Container));
             Container.CreateIfNotExists();
 
+            if (blockSizeInKB > maxBlockSize) throw new ArgumentException("Block size can not be more than 4mb");
+            BlockSizeInKB = blockSizeInKB;
+
             UseUrlExpiration(new UrlExpiration());
             UseCacheControlExpiration(new AzureCacheControlExpiration());
-
-            BlockSizeInKB = 1024 * blockSizeInKB;
-            if (blockSizeInKB > BlockSizeInKB) throw new ArgumentException("Block size can not be more than 4mb");
         }
 
 

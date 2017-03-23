@@ -1,3 +1,6 @@
+#### 0.1.7 - 23.03.2017
+* Fixes issues with setting file type when uploading
+
 #### 0.1.6 - 23.02.2017
 * Adds support for ftyp mp42 mp41 mp42isom
 

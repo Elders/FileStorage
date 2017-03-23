@@ -6,5 +6,6 @@ namespace FileStorage.MimeTypes
     {
         string GetMimeType(byte[] data);
         IReadOnlyCollection<string> SupportedTypes { get; }
+        string DefaultMimeType { get; }
     }
 }

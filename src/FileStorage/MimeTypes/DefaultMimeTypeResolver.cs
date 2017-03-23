@@ -6,7 +6,6 @@ namespace FileStorage.MimeTypes
 {
     public class DefaultMimeTypeResolver : IMimeTypeResolver
     {
-        string defaultMimeType = "application/octet-stream";
         readonly IList<MimeTypeMapper> mappings = new List<MimeTypeMapper>
             {
                 new MimeTypeMapper( "BMP", "image/bmp", new MimeTypePattern(new byte[] { 66, 77 }) ),
@@ -60,12 +59,20 @@ namespace FileStorage.MimeTypes
                     return mapping.Mime;
             }
 
-            return defaultMimeType;
+            return DefaultMimeType;
         }
 
         public IReadOnlyCollection<string> SupportedTypes
         {
             get { return mappings.Select(x => x.Name).Distinct((StringComparer.InvariantCultureIgnoreCase)).ToList().AsReadOnly(); }
+        }
+
+        public string DefaultMimeType
+        {
+            get
+            {
+                return "application/octet-stream";
+            }
         }
     }
 }
