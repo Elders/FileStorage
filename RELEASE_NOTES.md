@@ -1,3 +1,6 @@
+#### 0.1.8 - 23.03.2017
+* Fixes issues with setting file type when uploading
+
 #### 0.1.7 - 23.03.2017
 * Fixes issues with setting file type when uploading
 
