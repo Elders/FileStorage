@@ -1,3 +1,6 @@
+#### 0.1.10 - 02.06.2017
+* Release FileStorage Abstactions as a separate Nuget package
+
 #### 0.1.9 - 23.03.2017
 * Fixes issues with steam size
 
