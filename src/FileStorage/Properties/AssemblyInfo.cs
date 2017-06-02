@@ -3,15 +3,22 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitleAttribute("FileStorage")]
-[assembly: AssemblyDescriptionAttribute("FileStorage Abstraction")]
+[assembly: AssemblyDescriptionAttribute("FileStorage Web API integration")]
 [assembly: ComVisibleAttribute(false)]
 [assembly: AssemblyProductAttribute("FileStorage")]
-[assembly: AssemblyCopyrightAttribute("Copyright ©  2016")]
-[assembly: AssemblyVersionAttribute("0.1.0.0")]
-[assembly: AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.1.0+17.Branch.master.Sha.5469578bac04ebe291ed830b3d9729999d461116")]
+[assembly: AssemblyCopyrightAttribute("Copyright ©  2017")]
+[assembly: AssemblyVersionAttribute("0.1.10.0")]
+[assembly: AssemblyFileVersionAttribute("0.1.10.0")]
+[assembly: AssemblyInformationalVersionAttribute("0.1.10+1.Branch.master.Sha.0d8d64d33fab6696f3dcb49df618ca2a2e569f08")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "0.1.0.0";
+        internal const System.String AssemblyTitle = "FileStorage";
+        internal const System.String AssemblyDescription = "FileStorage Web API integration";
+        internal const System.Boolean ComVisible = false;
+        internal const System.String AssemblyProduct = "FileStorage";
+        internal const System.String AssemblyCopyright = "Copyright ©  2017";
+        internal const System.String AssemblyVersion = "0.1.10.0";
+        internal const System.String AssemblyFileVersion = "0.1.10.0";
+        internal const System.String AssemblyInformationalVersion = "0.1.10+1.Branch.master.Sha.0d8d64d33fab6696f3dcb49df618ca2a2e569f08";
     }
 }
