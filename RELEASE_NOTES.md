@@ -1,3 +1,6 @@
+#### 0.1.11 - 05.06.2017
+* Add the option to delete a file
+
 #### 0.1.10 - 02.06.2017
 * Release FileStorage Abstactions as a separate Nuget package
 

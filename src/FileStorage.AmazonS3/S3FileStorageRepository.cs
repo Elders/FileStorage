@@ -152,5 +152,13 @@ namespace FileStorage.AmazonS3
         {
             throw new NotImplementedException();
         }
+
+        public void Delete(string fileName)
+        {
+            foreach (var format in storageSettings.Generator.Formats)
+            {
+                storageSettings.Client.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = storageSettings.BucketName, Key = format.Name + "/" + fileName });
+            }
+        }
     }
 }

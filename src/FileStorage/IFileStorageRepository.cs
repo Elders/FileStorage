@@ -13,5 +13,6 @@ namespace FileStorage
         string GetFileUri(string fileName, string format = "original");
         bool FileExists(string fileName, string format = "original");
         Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original");
+        void Delete(string fileName);
     }
 }

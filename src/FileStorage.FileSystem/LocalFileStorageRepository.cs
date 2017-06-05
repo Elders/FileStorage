@@ -95,5 +95,18 @@ namespace FileStorage.FileSystem
         {
             throw new NotImplementedException();
         }
+
+        public void Delete(string fileName)
+        {
+            foreach (var format in storageSettings.Generator.Formats)
+            {
+                var uri = this.GetFileUri(fileName, format.Name);
+
+                if (string.IsNullOrEmpty(uri) == false)
+                {
+                    File.Delete(uri);
+                }
+            }
+        }
     }
 }

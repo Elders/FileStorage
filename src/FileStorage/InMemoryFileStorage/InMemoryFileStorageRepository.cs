@@ -87,6 +87,17 @@ namespace FileStorage.InMemoryFileStorage
                 storage.Add(key, file);
         }
 
+        public void Delete(string fileName)
+        {
+            foreach (var format in storageSettings.Generator.Formats)
+            {
+                var key = GetKey(fileName, format.Name);
+
+                if (storage.ContainsKey(key))
+                    storage.Remove(key);
+            }
+        }
+
         string GetKey(string fileName, string format)
         {
             return format + "/" + fileName;

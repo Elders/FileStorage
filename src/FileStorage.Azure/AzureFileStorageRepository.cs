@@ -75,9 +75,13 @@ namespace FileStorage.Azure
 
             foreach (var meta in metaInfo)
             {
-                // The supported characters in the blob metadata must be ASCII characters.
-                // https://github.com/Azure/azure-sdk-for-net/issues/178
-                blockBlob.Metadata.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
+                // The key must comply with the identifier guidelines
+                if (System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(meta.Key))
+                {
+                    // The supported characters in the blob metadata must be ASCII characters.
+                    // https://github.com/Azure/azure-sdk-for-net/issues/178
+                    blockBlob.Metadata.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
+                }
             }
 
             if (storageSettings.IsMimeTypeResolverEnabled)
@@ -97,6 +101,16 @@ namespace FileStorage.Azure
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             return new AzureFileStorageStream(storageSettings, fileName, metaInfo, format);
+        }
+
+        public void Delete(string fileName)
+        {
+            foreach (var format in storageSettings.Generator.Formats)
+            {
+                var key = GetKey(fileName, format.Name);
+                var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+                var test = blockBlob.DeleteIfExists();
+            }
         }
 
         string GetSasContainerToken()
