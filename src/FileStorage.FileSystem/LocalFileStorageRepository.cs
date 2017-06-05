@@ -27,6 +27,12 @@ namespace FileStorage.FileSystem
             if (ReferenceEquals(metaInfo, null) == true)
                 throw new ArgumentNullException(nameof(metaInfo));
 
+            if (fileName.Contains('.') == false && storageSettings.IsMimeTypeResolverEnabled)
+            {
+                var fileExtension = storageSettings.MimeTypeResolver.GetExtension(data);
+                fileName = fileName + fileExtension;
+            }
+
             var filePath = Path.Combine(storageSettings.StorageFolder, format, fileName);
             var fileInfo = new FileInfo(filePath);
 

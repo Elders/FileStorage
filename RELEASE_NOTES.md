@@ -1,3 +1,6 @@
+#### 0.1.12 - 05.06.2017
+* Add the ability to use MimeTypeResolver in LocalFileStorageRepository
+
 #### 0.1.11 - 05.06.2017
 * Add the option to delete a file
 

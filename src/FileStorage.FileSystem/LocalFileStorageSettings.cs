@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileStorage.MimeTypes;
+using System;
 using System.IO;
 
 namespace FileStorage.FileSystem
@@ -8,6 +9,8 @@ namespace FileStorage.FileSystem
         public string StorageFolder { get; private set; }
         public IFileGenerator Generator { get; private set; }
         public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
+        public IMimeTypeResolver MimeTypeResolver { get; private set; }
+        public bool IsMimeTypeResolverEnabled { get { return ReferenceEquals(MimeTypeResolver, null) == false; } }
 
         public FileSystemFileStorageSettings(string storageFolder)
         {
@@ -24,5 +27,11 @@ namespace FileStorage.FileSystem
             return this;
         }
 
+        public FileSystemFileStorageSettings UseMimeTypeResolver(IMimeTypeResolver resolver)
+        {
+            if (ReferenceEquals(resolver, null) == true) throw new ArgumentNullException(nameof(resolver));
+            MimeTypeResolver = resolver;
+            return this;
+        }
     }
 }
