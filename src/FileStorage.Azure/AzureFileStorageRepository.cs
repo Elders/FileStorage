@@ -109,7 +109,7 @@ namespace FileStorage.Azure
             {
                 var key = GetKey(fileName, format.Name);
                 var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
-                var test = blockBlob.DeleteIfExists();
+                blockBlob.DeleteIfExistsAsync();
             }
         }
 

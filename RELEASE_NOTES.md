@@ -1,3 +1,6 @@
+#### 0.1.13 - 05.06.2017
+* Delete files async in Azure Blob Storage
+
 #### 0.1.12 - 05.06.2017
 * Add the ability to use MimeTypeResolver in LocalFileStorageRepository
 
