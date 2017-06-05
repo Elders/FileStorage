@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisibleAttribute(false)]
 [assembly: AssemblyProductAttribute("FileStorage")]
 [assembly: AssemblyCopyrightAttribute("Copyright ©  2017")]
-[assembly: AssemblyVersionAttribute("0.1.10.0")]
-[assembly: AssemblyFileVersionAttribute("0.1.10.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.1.10+1.Branch.master.Sha.0d8d64d33fab6696f3dcb49df618ca2a2e569f08")]
+[assembly: AssemblyVersionAttribute("0.1.11.0")]
+[assembly: AssemblyFileVersionAttribute("0.1.11.0")]
+[assembly: AssemblyInformationalVersionAttribute("0.1.11+1.Branch.master.Sha.6b5e9ba8ad13e13597fafb0edd32c79a39746f44")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const System.String AssemblyTitle = "FileStorage";
@@ -17,8 +17,8 @@ namespace System {
         internal const System.Boolean ComVisible = false;
         internal const System.String AssemblyProduct = "FileStorage";
         internal const System.String AssemblyCopyright = "Copyright ©  2017";
-        internal const System.String AssemblyVersion = "0.1.10.0";
-        internal const System.String AssemblyFileVersion = "0.1.10.0";
-        internal const System.String AssemblyInformationalVersion = "0.1.10+1.Branch.master.Sha.0d8d64d33fab6696f3dcb49df618ca2a2e569f08";
+        internal const System.String AssemblyVersion = "0.1.11.0";
+        internal const System.String AssemblyFileVersion = "0.1.11.0";
+        internal const System.String AssemblyInformationalVersion = "0.1.11+1.Branch.master.Sha.6b5e9ba8ad13e13597fafb0edd32c79a39746f44";
     }
 }
