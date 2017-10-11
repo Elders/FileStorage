@@ -1,3 +1,6 @@
+#### 0.1.14 - 11.10.2017
+* Adds mapping for mp4 file format
+
 #### 0.1.13 - 05.06.2017
 * Delete files async in Azure Blob Storage
 
