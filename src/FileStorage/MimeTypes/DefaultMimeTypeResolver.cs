@@ -39,6 +39,7 @@ namespace FileStorage.MimeTypes
                 new MimeTypeMapper( "MP4", ".mp4", "video/mp4", new MimeTypePattern("00 00 00 1C 66 74 79 70 4D 53 4E 56 01 29 00 46 4D 53 4E 56 6D 70 34 32" )),
                 new MimeTypeMapper( "MP4", ".mp4", "video/mp4", new MimeTypePattern("00 00 00 1C 66 74 79 70 6D 70 34 32 00 00 00 01 6D 70 34 31 6D 70 34 32 69 73 6F 6D 00 00")),  // ftypmp?42mp41?mp42isom | https://en.wikipedia.org/wiki/ISO_base_media_file_format
                 new MimeTypeMapper( "MP4", ".mp4", "video/mp4", new MimeTypePattern("66 74 79 70 69 73 6F 6D", 4)),
+                new MimeTypeMapper( "MP4", ".mp4", "video/mp4", new MimeTypePattern("66 74 79 70 6D 70 34 32", 4)), // ftypmp42
                 new MimeTypeMapper( "MP4", ".mp4", "video/mp4", new MimeTypePattern("00 00 00 20 66 74 79 70 69 73 6F 36 00 00 00 01 6D 70 34 32 69 73 6F 36 61 76 63 31 69 73 6F 6D")), // this is added because of https://github.com/titansgroup/k4l-video-trimmer | ftypiso6 mp42iso6avc1isom
                 new MimeTypeMapper( "ASF_WMV", ".wmv", "video/x-ms-wmv", new MimeTypePattern("30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C" )),
                 new MimeTypeMapper( "MPG", ".mpeg", "video/mpeg", new MimeTypePattern("00 00 01 B3" )),

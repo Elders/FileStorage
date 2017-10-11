@@ -8,7 +8,7 @@ namespace FileStorage.Playground
 {
     class Program
     {
-        static readonly string fileName = "pic2";
+        static readonly string fileName = "75862742-47cb-4cf2-a133-a0ec464dd836";
         static void Main(string[] args)
         {
             IFileGenerator generator = new FileGenerator.FileGenerator();
@@ -17,7 +17,7 @@ namespace FileStorage.Playground
             IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
             IFileStorageRepository storage = FileSystem(generator, mimeTypeResolver);
 
-            var bytes = File.ReadAllBytes($@"E:\{fileName}");
+            var bytes = File.ReadAllBytes($@"D:\{fileName}");
             var contentType = new DefaultMimeTypeResolver().GetMimeType(bytes);
             var metaData = new List<FileMeta> { new FileMeta("key-kv", "value-kv") };
 
@@ -84,9 +84,10 @@ namespace FileStorage.Playground
 
         static IFileStorageRepository FileSystem(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
         {
-            var path = @"E:\kv";
+            var path = @"D:\kv";
             var settings = new FileSystem.FileSystemFileStorageSettings(path)
-                .UseFileGenerator(generator);
+                .UseFileGenerator(generator)
+                .UseMimeTypeResolver(mimeTypeResolver);
             var storage = new FileSystem.FileSystemFileStorageRepository(settings);
 
             return storage;
