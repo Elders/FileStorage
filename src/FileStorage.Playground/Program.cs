@@ -8,7 +8,7 @@ namespace FileStorage.Playground
 {
     class Program
     {
-        static readonly string fileName = "75862742-47cb-4cf2-a133-a0ec464dd836";
+        static readonly string fileName = @"kv\m4a.m4a";
         static void Main(string[] args)
         {
             IFileGenerator generator = new FileGenerator.FileGenerator();

@@ -50,7 +50,8 @@ namespace FileStorage.MimeTypes
                 new MimeTypeMapper( "JPG", ".jpg", "image/jpeg", new MimeTypePattern("FF D8 FF E8" )),
                 new MimeTypeMapper( "JPG", ".bmp", "image/bmp", new MimeTypePattern("42 4D" )),
                 new MimeTypeMapper( "GIF", ".gif", "image/gif", new MimeTypePattern("47 49 46 38 37 61" )),
-                new MimeTypeMapper( "GIF", ".gif", "image/gif", new MimeTypePattern("47 49 46 38 39 61" ))
+                new MimeTypeMapper( "GIF", ".gif", "image/gif", new MimeTypePattern("47 49 46 38 39 61" )),
+                new MimeTypeMapper( "M4A", ".m4a", "audio/mp4", new MimeTypePattern("66 74 79 70 4D 34 41 20", 4)), // ftypM4A
             };
 
         public string GetMimeType(byte[] data)

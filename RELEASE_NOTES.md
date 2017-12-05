@@ -1,3 +1,6 @@
+#### 0.1.16 - 05.12.2017
+* Adds mapping for mp4 - ftypM4A
+
 #### 0.1.15 - 11.10.2017
 * Adds mapping for mp4 file format - ftypmp42
 
