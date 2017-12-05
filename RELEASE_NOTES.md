@@ -1,3 +1,7 @@
+#### 0.1.17 - 05.12.2017
+* Adds mapping for mp4 - ftypM4A
+* New scripts for build/deployment
+
 #### 0.1.16 - 05.12.2017
 * Adds mapping for mp4 - ftypM4A
 
