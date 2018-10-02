@@ -1,8 +1,8 @@
 ﻿namespace FileStorage
 {
-    public class FIleGenerateResponse
+    public class FileGenerateResponse
     {
-        public FIleGenerateResponse(bool success, byte[] data, string error)
+        public FileGenerateResponse(bool success, byte[] data, string error)
         {
             Success = success;
             Data = data;

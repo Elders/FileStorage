@@ -29,7 +29,7 @@ namespace FileStorage.FileGenerator
             }
         }
 
-        public FIleGenerateResponse Generate(byte[] data, string format)
+        public FileGenerateResponse Generate(byte[] data, string format)
         {
             if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
             if (formats.ContainsKey(format) == false) throw new NotSupportedException($"This file format is not supported. {format}");

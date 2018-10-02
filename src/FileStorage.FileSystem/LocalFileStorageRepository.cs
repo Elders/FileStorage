@@ -1,22 +1,35 @@
-﻿using System;
+﻿using FileStorage.Files;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FileStorage.FileFormats;
 
 namespace FileStorage.FileSystem
 {
-    public class FileSystemFileStorageRepository : IFileStorageRepository
+    public class LocalFileStorageRepository : FileStorageRepository<LocalFileStorageSettings>
     {
-        readonly FileSystemFileStorageSettings storageSettings;
-
-        public FileSystemFileStorageRepository(FileSystemFileStorageSettings storageSettings)
+        public LocalFileStorageRepository(LocalFileStorageSettings storageSettings)
+            : base(storageSettings)
         {
-            if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
-            this.storageSettings = storageSettings;
         }
 
-        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public override IFile Get(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+
+            var uri = GetFileUri(fileName);
+
+            if (string.IsNullOrEmpty(uri))
+                throw new FileNotFoundException($"File {Path.Combine(_storageSettings.StorageFolder, fileName)} not found");
+
+            var fileBytes = File.ReadAllBytes(uri);
+
+            var fileInfo = new FileInfo(uri);
+
+            return new LocalFile(fileBytes, fileInfo.Name);
+        }
+
+        public override SaveResult Save(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentNullException(nameof(fileName));
@@ -27,56 +40,55 @@ namespace FileStorage.FileSystem
             if (ReferenceEquals(metaInfo, null) == true)
                 throw new ArgumentNullException(nameof(metaInfo));
 
-            if (fileName.Contains('.') == false && storageSettings.IsMimeTypeResolverEnabled)
+
+            var baseResult = base.Save(fileName, data, metaInfo);
+            if (baseResult.Success == false)
+                return baseResult;
+
+            if (fileName.Contains('.') == false && _storageSettings.IsMimeTypeResolverEnabled)
             {
-                var fileExtension = storageSettings.MimeTypeResolver.GetExtension(data);
+                var fileExtension = _storageSettings.MimeTypeResolver.GetExtension(data);
                 fileName = fileName + fileExtension;
             }
 
-            var filePath = Path.Combine(storageSettings.StorageFolder, format, fileName);
+            var filePath = Path.Combine(_storageSettings.StorageFolder, fileName);
             var fileInfo = new FileInfo(filePath);
 
             if (!fileInfo.Directory.Exists)
                 fileInfo.Directory.Create();
 
             File.WriteAllBytes(filePath, data);
+
+            return new SaveResult(true, string.Empty);
         }
 
-        public IFile Download(string fileName, string format = "original")
+        public override void Delete(string fileName)
         {
-            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            var uri = GetFileUri(fileName);
 
-            var uri = this.GetFileUri(fileName, format);
-
-            if (string.IsNullOrEmpty(uri))
-            {
-                if (storageSettings.IsGenerationEnabled == true)
-                {
-                    var file = storageSettings.Generator.Generate(Download(fileName).Data, format);
-                    return new LocalFile(file.Data, fileName);
-                }
-
-                if (storageSettings.IsGenerationEnabled == false && format != Original.FormatName)
-                    throw new FileNotFoundException($"File {Path.Combine(storageSettings.StorageFolder, format, fileName)} not found. Plugin in {typeof(IFileGenerator)} to generate it.");
-
-                throw new FileNotFoundException($"File {Path.Combine(storageSettings.StorageFolder, format, fileName)} not found");
-            }
-
-            var fileBytes = File.ReadAllBytes(uri);
-
-            var fileInfo = new FileInfo(uri);
-
-            return new LocalFile(fileBytes, fileInfo.Name);
+            if (string.IsNullOrEmpty(uri) == false)
+                File.Delete(uri);
         }
 
-        public string GetFileUri(string fileName, string format = "original")
+        public override bool FileExists(string fileName)
         {
-            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new ArgumentNullException(nameof(fileName));
 
-            var directoryPath = Path.Combine(storageSettings.StorageFolder, format);
-            var directoryInfo = new DirectoryInfo(directoryPath);
+            var directoryInfo = new DirectoryInfo(_storageSettings.StorageFolder);
             FileInfo[] files = directoryInfo.GetFiles();
-            var found = files.SingleOrDefault(x => x.Name.ToLowerInvariant() == fileName.ToLowerInvariant());
+            var found = files.Any(x => x.Name.ToLowerInvariant() == fileName.ToLowerInvariant());
+
+            return found;
+        }
+
+        public override string GetFileUri(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+
+            var directoryInfo = new DirectoryInfo(_storageSettings.StorageFolder);
+            FileInfo[] files = directoryInfo.GetFiles();
+            var found = files.SingleOrDefault(x => Path.GetFileNameWithoutExtension(x.FullName).ToLowerInvariant() == fileName.ToLowerInvariant());
 
             if (ReferenceEquals(found, null) == true)
                 return string.Empty;
@@ -84,35 +96,11 @@ namespace FileStorage.FileSystem
             return found.FullName;
         }
 
-        public bool FileExists(string fileName, string format = "original")
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
-            var directoryPath = Path.Combine(storageSettings.StorageFolder, format);
-            var directoryInfo = new DirectoryInfo(directoryPath);
-            FileInfo[] files = directoryInfo.GetFiles();
-            var found = files.SingleOrDefault(x => x.Name.ToLowerInvariant() == fileName.ToLowerInvariant());
-
-            return found != null;
-        }
-
-        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public override Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(string fileName)
-        {
-            foreach (var format in storageSettings.Generator.Formats)
-            {
-                var uri = this.GetFileUri(fileName, format.Name);
 
-                if (string.IsNullOrEmpty(uri) == false)
-                {
-                    File.Delete(uri);
-                }
-            }
-        }
     }
 }

@@ -8,18 +8,19 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
+using FileStorage.Files;
 
 namespace FileStorage.WebApi.Multipart
 {
     public class CustomMultipartStreamProvider : MultipartStreamProvider
     {
-        readonly IFileStorageRepository repository;
+        readonly IFileStorageRepositoryWithFSGenerator repository;
         readonly IFileGenerator generator;
         readonly NameValueCollection formData = new NameValueCollection();
         readonly List<CustomMultipartFileData> fileContents = new List<CustomMultipartFileData>();
         readonly Collection<bool> isFormData = new Collection<bool>();
 
-        public CustomMultipartStreamProvider(IFileStorageRepository repository, IFileGenerator generator)
+        public CustomMultipartStreamProvider(IFileStorageRepositoryWithFSGenerator repository, IFileGenerator generator)
         {
             if (ReferenceEquals(repository, null) == true) throw new ArgumentNullException(nameof(repository));
             if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));

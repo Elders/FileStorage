@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FileStorage</RootNamespace>
     <AssemblyName>FileStorage</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,14 +31,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ImageProcessor, Version=2.6.2.25, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.6.2.25\lib\net452\ImageProcessor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Files\FileInformation.cs" />
+    <Compile Include="Files\FileStorageFile.cs" />
+    <Compile Include="Cache\FileStorageCache.cs" />
+    <Compile Include="Converters\IConverters.cs" />
+    <Compile Include="Converters\ConverterContext.cs" />
+    <Compile Include="Converters\Extensions\ConverterContextExtensions.cs" />
+    <Compile Include="Converters\ImageConverters\ImageQualityConverter.cs" />
+    <Compile Include="Converters\ImageConverters\ImageSizeConverter.cs" />
     <Compile Include="FileFormats\IFileFormat.cs" />
     <Compile Include="FileFormats\Original.cs" />
     <Compile Include="FIleGenerateResponse.cs" />
     <Compile Include="FileGenerator.cs" />
+    <Compile Include="FileStorageRepository.cs" />
+    <Compile Include="FileStorageSettings.cs" />
     <Compile Include="IFileGenerator.cs" />
+    <Compile Include="Cache\IFileStorageCache.cs" />
+    <Compile Include="InMemoryFileStorage\InMemoryFile.cs" />
     <Compile Include="InMemoryFileStorage\InMemoryFileStorageRepository.cs" />
     <Compile Include="InMemoryFileStorage\InMemoryFileStorageSettings.cs" />
     <Compile Include="MimeTypes\DefaultMimeTypeResolver.cs" />
@@ -45,15 +62,25 @@
     <Compile Include="MimeTypes\MimeTypeMapper.cs" />
     <Compile Include="MimeTypes\MimeTypePattern.cs" />
     <Compile Include="Extensions\StreamExtentions.cs" />
-    <Compile Include="FileMeta.cs" />
-    <Compile Include="IFile.cs" />
+    <Compile Include="Files\FileMeta.cs" />
+    <Compile Include="Files\IFile.cs" />
     <Compile Include="IFileStorageRepository.cs" />
     <Compile Include="LocalFile.cs" />
     <Compile Include="IFileStorageSettings.cs" />
     <Compile Include="UrlExpiration.cs" />
+    <Compile Include="Validations\FileSize\FileSize.cs" />
+    <Compile Include="Validations\FileSize\FileSizeValidation.cs" />
+    <Compile Include="Validations\FileSize\SizeInBytes.cs" />
+    <Compile Include="Validations\FileSize\SizeInKBytes.cs" />
+    <Compile Include="Validations\FileSize\SizeInMBytes.cs" />
+    <Compile Include="Validations\FileType\FileTypeValidation.cs" />
+    <Compile Include="Validations\IValidation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

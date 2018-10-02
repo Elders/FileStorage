@@ -6,9 +6,9 @@
 
         public string Name { get { return FormatName; } }
 
-        public FIleGenerateResponse Generate(byte[] data)
+        public FileGenerateResponse Generate(byte[] data)
         {
-            return new FIleGenerateResponse(true, data, string.Empty);
+            return new FileGenerateResponse(true, data, string.Empty);
         }
     }
 }

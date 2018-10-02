@@ -4,6 +4,6 @@
     {
         string Name { get; }
 
-        FIleGenerateResponse Generate(byte[] data);
+        FileGenerateResponse Generate(byte[] data);
     }
 }

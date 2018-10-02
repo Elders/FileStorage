@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using FileStorage.Extensions;
+using FileStorage.Files;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace FileStorage.Azure
 {
-    public class AzureFileStorageRepository : IFileStorageRepository
+    public class AzureFileStorageRepository : IFileStorageRepositoryWithFSGenerator
     {
         readonly AzureStorageSettings storageSettings;
 

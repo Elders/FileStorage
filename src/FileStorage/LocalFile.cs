@@ -1,4 +1,6 @@
-﻿namespace FileStorage
+﻿using FileStorage.Files;
+
+namespace FileStorage
 {
     public class LocalFile : IFile
     {

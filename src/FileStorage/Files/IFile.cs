@@ -1,4 +1,4 @@
-﻿namespace FileStorage
+﻿namespace FileStorage.Files
 {
     public interface IFile
     {

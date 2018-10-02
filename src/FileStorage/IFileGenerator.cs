@@ -11,7 +11,7 @@ namespace FileStorage
         /// <param name="data"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        FIleGenerateResponse Generate(byte[] data, string format);
+        FileGenerateResponse Generate(byte[] data, string format);
 
         /// <summary>
         /// Registers Format

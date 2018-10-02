@@ -2,70 +2,61 @@
 using System.Collections.Generic;
 using System.IO;
 using FileStorage.FileFormats;
+using FileStorage.Files;
 
 namespace FileStorage.InMemoryFileStorage
 {
-    public class InMemoryFileStorageRepository : IFileStorageRepository
+    public partial class InMemoryFileStorageRepository : FileStorageRepository<InMemoryFileStorageSettings>
     {
         readonly Dictionary<string, InMemoryFile> storage = new Dictionary<string, InMemoryFile>();
         readonly InMemoryFileStorageSettings storageSettings;
 
         public InMemoryFileStorageRepository(InMemoryFileStorageSettings storageSettings)
+            : base(storageSettings)
         {
             if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
+
             this.storageSettings = storageSettings;
         }
 
-        public IFile Download(string fileName, string format = "original")
+        public override IFile Get(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
-            var uri = GetFileUri(fileName, format);
-            var key = GetKey(fileName, format);
+            var uri = GetFileUri(fileName);
 
             if (string.IsNullOrEmpty(uri))
-            {
-                if (storageSettings.IsGenerationEnabled == true)
-                {
-                    var file = storageSettings.Generator.Generate(Download(fileName).Data, format);
-                    return new LocalFile(file.Data, fileName);
-                }
+                throw new FileNotFoundException($"File {fileName} not found");
 
-                if (storageSettings.IsGenerationEnabled == false && format != Original.FormatName)
-                    throw new FileNotFoundException($"File {key} not found. Plugin in {typeof(IFileGenerator)} to generate it.");
-
-                throw new FileNotFoundException($"File {key} not found");
-            }
-
-            var fileBytes = storage[key].Data;
+            var fileBytes = storage[fileName].Data;
 
             return new LocalFile(fileBytes, fileName);
         }
 
-        public bool FileExists(string fileName, string format = "original")
+        public override bool FileExists(string fileName)
         {
-            var key = GetKey(fileName, format);
-            return storage.ContainsKey(key);
+            return storage.ContainsKey(fileName);
         }
 
-        public string GetFileUri(string fileName, string format = "original")
+        public override string GetFileUri(string fileName)
         {
-            var key = GetKey(fileName, format);
-            return storage.ContainsKey(key) ? key : string.Empty;
+            return FileExists(fileName) ? fileName : string.Empty;
         }
 
-        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public override Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo)
         {
             throw new NotImplementedException();
         }
 
-        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public override SaveResult Save(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo)
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
-            var key = GetKey(fileName, format);
+            var baseResult = base.Save(fileName, data, metaInfo);
+            if (baseResult.Success == false)
+                return baseResult;
 
             var metaDictionary = new Dictionary<string, string>();
             foreach (var meta in metaInfo)
@@ -81,43 +72,19 @@ namespace FileStorage.InMemoryFileStorage
 
             var file = new InMemoryFile(data, metaDictionary, contentType);
 
-            if (storage.ContainsKey(key))
-                storage[key] = file;
+            if (storage.ContainsKey(fileName))
+                storage[fileName] = file;
             else
-                storage.Add(key, file);
+                storage.Add(fileName, file);
+
+
+            return SaveResult.Successfull;
         }
 
-        public void Delete(string fileName)
+        public override void Delete(string fileName)
         {
-            foreach (var format in storageSettings.Generator.Formats)
-            {
-                var key = GetKey(fileName, format.Name);
-
-                if (storage.ContainsKey(key))
-                    storage.Remove(key);
-            }
-        }
-
-        string GetKey(string fileName, string format)
-        {
-            return format + "/" + fileName;
-        }
-
-
-        class InMemoryFile
-        {
-            public InMemoryFile(byte[] data, Dictionary<string, string> metaInfo, string contentType)
-            {
-                Data = data;
-                MetaInfo = metaInfo;
-                ContentType = contentType;
-            }
-
-            public byte[] Data { get; private set; }
-
-            public Dictionary<string, string> MetaInfo { get; private set; }
-
-            public string ContentType { get; private set; }
+            if (storage.ContainsKey(fileName))
+                storage.Remove(fileName);
         }
     }
 }

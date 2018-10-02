@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FileStorage.Playground</RootNamespace>
     <AssemblyName>FileStorage.Playground</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,10 +34,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImageResizer, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageResizer.4.0.5\lib\net45\ImageResizer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -53,6 +50,10 @@
       <Project>{08822344-bf80-43fd-8a72-e48b487c5305}</Project>
       <Name>FileStorage.Azure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileStorage.Caches\FileStorage.Caches.csproj">
+      <Project>{B2CD4E9D-9CD1-43B7-9DC1-8FEC2DF0F92A}</Project>
+      <Name>FileStorage.Caches</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileStorage.FileSystem\FileStorage.FileSystem.csproj">
       <Project>{e363470e-f7dc-40f6-82e1-8dad51e63304}</Project>
       <Name>FileStorage.FileSystem</Name>
@@ -67,7 +68,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

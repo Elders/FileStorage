@@ -3,6 +3,12 @@ using System.IO;
 using FileStorage.AmazonS3;
 using FileStorage.MimeTypes;
 using FileStorage.Azure;
+using FileStorage.FileSystem;
+using FileStorage.Validations.FileSize;
+using FileStorage.Converters.ImageProcessor;
+using FileStorage.Converters;
+using FileStorage.Cache.InMemory;
+using FileStorage.Files;
 
 namespace FileStorage.Playground
 {
@@ -11,21 +17,24 @@ namespace FileStorage.Playground
         static readonly string fileName = @"kv\m4a.m4a";
         static void Main(string[] args)
         {
-            IFileGenerator generator = new FileGenerator.FileGenerator();
-            generator.RegisterFormat(new MobileThumbnail());
+            TestFileSystem();
 
-            IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
-            IFileStorageRepository storage = FileSystem(generator, mimeTypeResolver);
+            return;
+            //IFileGenerator generator = new FileGenerator.FileGenerator();
+            //generator.RegisterFormat(new MobileThumbnail());
 
-            var bytes = File.ReadAllBytes($@"D:\{fileName}");
-            var contentType = new DefaultMimeTypeResolver().GetMimeType(bytes);
-            var metaData = new List<FileMeta> { new FileMeta("key-kv", "value-kv") };
+            //IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
+            //IFileStorageRepository storage = FileSystem(generator, mimeTypeResolver);
 
-            storage.Upload(fileName, bytes, metaData);
-            var url = storage.GetFileUri(fileName);
+            //var bytes = File.ReadAllBytes($@"D:\{fileName}");
+            //var contentType = new DefaultMimeTypeResolver().GetMimeType(bytes);
+            //var metaData = new List<FileMeta> { new FileMeta("key-kv", "value-kv") };
 
-            var existsTest3 = storage.FileExists("gg");
-            var existsTest4 = storage.FileExists(fileName);
+            //storage.Save(fileName, bytes, metaData);
+            //var url = storage.GetFileUri(fileName);
+
+            //var existsTest3 = storage.FileExists("gg");
+            //var existsTest4 = storage.FileExists(fileName);
 
             //var file = storage.Download(fileName);
             //var file2 = storage.Download(fileName, MobileThumbnail.FormatName);
@@ -42,7 +51,7 @@ namespace FileStorage.Playground
         }
 
 
-        static IFileStorageRepository Azure(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
+        static IFileStorageRepositoryWithFSGenerator Azure(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
         {
             var connectionString = string.Empty;
             var containerName = string.Empty;
@@ -56,7 +65,7 @@ namespace FileStorage.Playground
             return storage;
         }
 
-        static IFileStorageRepository AmazonS3(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
+        static IFileStorageRepositoryWithFSGenerator AmazonS3(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
         {
             var accessKey = string.Empty;
             var secretKey = string.Empty;
@@ -74,9 +83,7 @@ namespace FileStorage.Playground
 
         static IFileStorageRepository InMemory(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
         {
-            var settings = new InMemoryFileStorage.InMemoryFileStorageSettings()
-                .UseFileGenerator(generator)
-                .UseMimeTypeResolver(mimeTypeResolver);
+            var settings = new InMemoryFileStorage.InMemoryFileStorageSettings();
             var storage = new InMemoryFileStorage.InMemoryFileStorageRepository(settings);
 
             return storage;
@@ -85,13 +92,45 @@ namespace FileStorage.Playground
         static IFileStorageRepository FileSystem(IFileGenerator generator, IMimeTypeResolver mimeTypeResolver)
         {
             var path = @"D:\kv";
-            var settings = new FileSystem.FileSystemFileStorageSettings(path)
-                .UseFileGenerator(generator)
+            var settings = new FileSystem.LocalFileStorageSettings(path)
                 .UseMimeTypeResolver(mimeTypeResolver);
-            var storage = new FileSystem.FileSystemFileStorageRepository(settings);
+            var storage = new FileSystem.LocalFileStorageRepository(settings);
 
             return storage;
         }
-    }
 
+        private static void TestFileSystem()
+        {
+            IFileGenerator generator = new FileGenerator.FileGenerator();
+            IMimeTypeResolver mimeTypeResolver = new DefaultMimeTypeResolver();
+
+            var path = @"D:\test_file_storage";
+            var fileName = "yourcourt.jpeg";
+            var pathForFileToTestWith = Path.Combine(path, "test", fileName);
+
+
+            var newSettings = new LocalFileStorageSettings(Path.Combine(path, "storage"));
+
+            newSettings.AddValidation(new FileSizeValidation(new SizeInKBytes(120)));
+            newSettings.AddConverter(new ImageSizeConverter());
+            newSettings.AddConverter(new ImageQualityConverter());
+            newSettings.UseCache(new LocalFileStorageCache(Path.Combine(path, ".cache")));
+
+            var storage = new LocalFileStorageRepository(newSettings);
+
+            var context = new ConverterContext();
+
+            context.AddParameter("width", 1200);
+            context.AddParameter("height", 1300);
+            context.AddParameter("mode", "stretch");
+
+
+            storage.Save(fileName, File.ReadAllBytes(pathForFileToTestWith), new List<FileMeta>());
+
+            var result = storage.GetConverted(fileName, context);
+
+
+            storage.Save(fileName, result, new List<FileMeta>());
+        }
+    }
 }

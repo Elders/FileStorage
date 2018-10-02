@@ -7,10 +7,11 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using FileStorage.Extensions;
 using FileStorage.FileFormats;
+using FileStorage.Files;
 
 namespace FileStorage.AmazonS3
 {
-    public class S3FileStorageRepository : IFileStorageRepository
+    public class S3FileStorageRepository : IFileStorageRepositoryWithFSGenerator
     {
         readonly S3FileStorageSettings storageSettings;
         CloudFrontSettings cloudFrontSettings;
@@ -69,6 +70,9 @@ namespace FileStorage.AmazonS3
 
             catch (AmazonS3Exception ex)
             {
+                if (format == Original.FormatName)
+                    throw new FileNotFoundException($"Original file was not found.");
+
                 if (ex.StatusCode == HttpStatusCode.NotFound && format != Original.FormatName)
                 {
                     if (storageSettings.IsGenerationEnabled == true)
