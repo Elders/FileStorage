@@ -5,21 +5,21 @@
 
   <!--Nuget-->
   <PropertyGroup>
-    <PackageId>FileStorage.FileSystem</PackageId>
+    <PackageId>FileStorage.Azure</PackageId>
     <Product>FileStorage</Product>
     <Title>FileStorage</Title>
     <Authors>Elders OSS</Authors>
     <Copyright>Copyright © Elders OSS 2013</Copyright>
-    <Description>FileStorage FileSystem</Description>
+    <Description>FileStorage Azure</Description>
     <PackageTags>file storage azure amazon blob bucket s3 aws</PackageTags>
     <PackageLicenseUrl>https://github.com/Elders/FileStorage/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Elders/FileStorage</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Elders/FileStorage.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>Elders.FileStorage.FileSystem</AssemblyName>
+    <AssemblyName>Elders.FileStorage.Azure</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <RootNamespace>Elders.FileStorage.FileSystem</RootNamespace>
+    <RootNamespace>Elders.FileStorage.Azure</RootNamespace>
   </PropertyGroup>
 
   <!--netstandard2.0-->
@@ -51,9 +51,10 @@
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileStorage\FileStorage.csproj" />
+    <ProjectReference Include="..\Elders.FileStorage\Elders.FileStorage.csproj" />
   </ItemGroup>
 </Project>

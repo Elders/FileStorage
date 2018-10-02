@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using FileStorage.Extensions;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -16,7 +17,7 @@ namespace FileStorage.Azure
             this.storageSettings = storageSettings;
         }
 
-        public IFile Download(string fileName, string format = "original")
+        public async Task<IFile> DownloadAsync(string fileName, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
@@ -27,7 +28,7 @@ namespace FileStorage.Azure
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    blockBlob.DownloadToStream(memoryStream);
+                    await blockBlob.DownloadToStreamAsync(memoryStream).ConfigureAwait(false);
                     memoryStream.Position = 0;
 
                     return new LocalFile(memoryStream.ToByteArray(), fileName);
@@ -39,18 +40,16 @@ namespace FileStorage.Azure
             }
         }
 
-        public bool FileExists(string fileName, string format = "original")
+        public Task<bool> FileExistsAsync(string fileName, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
-            var result = blockBlob.Exists();
-
-            return result;
+            return blockBlob.ExistsAsync();
         }
 
-        public string GetFileUri(string fileName, string format = "original")
+        public Task<string> GetFileUriAsync(string fileName, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
@@ -59,12 +58,12 @@ namespace FileStorage.Azure
             var sharedAccessSignature = GetSasContainerToken();
 
             if (string.IsNullOrWhiteSpace(storageSettings.CdnUrl) == false)
-                return storageSettings.CdnUrl + blockBlob.Uri.AbsolutePath + sharedAccessSignature;
+                return Task.FromResult(storageSettings.CdnUrl + blockBlob.Uri.AbsolutePath + sharedAccessSignature);
 
-            return blockBlob.Uri + sharedAccessSignature;
+            return Task.FromResult(blockBlob.Uri + sharedAccessSignature);
         }
 
-        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Task UploadAsync(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
@@ -76,7 +75,7 @@ namespace FileStorage.Azure
             foreach (var meta in metaInfo)
             {
                 // The key must comply with the identifier guidelines
-                if (System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(meta.Key))
+                //if (System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(meta.Key))
                 {
                     // The supported characters in the blob metadata must be ASCII characters.
                     // https://github.com/Azure/azure-sdk-for-net/issues/178
@@ -92,25 +91,29 @@ namespace FileStorage.Azure
 
             blockBlob.Properties.CacheControl = storageSettings.CacheControlExpiration.CacheControlHeader;
 
-            blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
+            return blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
         }
 
-        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Task<Stream> GetStreamAsync(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
-            return new AzureFileStorageStream(storageSettings, fileName, metaInfo, format);
+            return Task.FromResult<Stream>(new AzureFileStorageStream(storageSettings, fileName, metaInfo, format));
         }
 
-        public void Delete(string fileName)
+        public Task DeleteAsync(string fileName)
         {
+            List<Task> deleteTasks = new List<Task>();
             foreach (var format in storageSettings.Generator.Formats)
             {
                 var key = GetKey(fileName, format.Name);
                 var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
-                blockBlob.DeleteIfExistsAsync();
+                Task deleteTask = blockBlob.DeleteIfExistsAsync();
+                deleteTasks.Add(deleteTask);
             }
+
+            return Task.WhenAll(deleteTasks.ToArray());
         }
 
         string GetSasContainerToken()

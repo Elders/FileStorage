@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using FileStorage.FileFormats;
 
 namespace FileStorage.InMemoryFileStorage
@@ -12,22 +13,23 @@ namespace FileStorage.InMemoryFileStorage
 
         public InMemoryFileStorageRepository(InMemoryFileStorageSettings storageSettings)
         {
-            if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
+            if (storageSettings is null) throw new ArgumentNullException(nameof(storageSettings));
             this.storageSettings = storageSettings;
         }
 
-        public IFile Download(string fileName, string format = "original")
+        public async Task<IFile> DownloadAsync(string fileName, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
-            var uri = GetFileUri(fileName, format);
+            var uri = await GetFileUriAsync(fileName, format).ConfigureAwait(false);
             var key = GetKey(fileName, format);
 
             if (string.IsNullOrEmpty(uri))
             {
                 if (storageSettings.IsGenerationEnabled == true)
                 {
-                    var file = storageSettings.Generator.Generate(Download(fileName).Data, format);
+                    var downloadResult = await DownloadAsync(fileName).ConfigureAwait(false);
+                    var file = storageSettings.Generator.Generate(downloadResult.Data, format);
                     return new LocalFile(file.Data, fileName);
                 }
 
@@ -42,28 +44,28 @@ namespace FileStorage.InMemoryFileStorage
             return new LocalFile(fileBytes, fileName);
         }
 
-        public bool FileExists(string fileName, string format = "original")
+        public Task<bool> FileExistsAsync(string fileName, string format = "original")
         {
             var key = GetKey(fileName, format);
-            return storage.ContainsKey(key);
+            return Task.FromResult(storage.ContainsKey(key));
         }
 
-        public string GetFileUri(string fileName, string format = "original")
+        public Task<string> GetFileUriAsync(string fileName, string format = "original")
         {
             var key = GetKey(fileName, format);
-            return storage.ContainsKey(key) ? key : string.Empty;
+            return Task.FromResult(storage.ContainsKey(key) ? key : string.Empty);
         }
 
-        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Task<Stream> GetStreamAsync(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             throw new NotImplementedException();
         }
 
-        public void Upload(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Task UploadAsync(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
-            if (ReferenceEquals(data, null) == true) throw new ArgumentNullException(nameof(data));
-            if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
+            if (data is null) throw new ArgumentNullException(nameof(data));
+            if (metaInfo is null) throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
 
@@ -85,9 +87,11 @@ namespace FileStorage.InMemoryFileStorage
                 storage[key] = file;
             else
                 storage.Add(key, file);
+
+            return Task.CompletedTask;
         }
 
-        public void Delete(string fileName)
+        public Task DeleteAsync(string fileName)
         {
             foreach (var format in storageSettings.Generator.Formats)
             {
@@ -96,6 +100,8 @@ namespace FileStorage.InMemoryFileStorage
                 if (storage.ContainsKey(key))
                     storage.Remove(key);
             }
+
+            return Task.CompletedTask;
         }
 
         string GetKey(string fileName, string format)

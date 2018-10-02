@@ -35,7 +35,7 @@ namespace FileStorage.Azure
             Container = blobClient.GetContainerReference(containerName);
 
             if (ReferenceEquals(Container, null) == true) throw new ArgumentNullException(nameof(Container));
-            Container.CreateIfNotExists();
+            bool created = Container.CreateIfNotExistsAsync().Result;
 
             if (blockSizeInKB > maxBlockSize) throw new ArgumentException("Block size can not be more than 4mb");
             BlockSizeInKB = blockSizeInKB;

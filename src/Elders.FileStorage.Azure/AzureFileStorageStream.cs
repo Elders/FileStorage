@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileStorage.Azure
 {
@@ -30,42 +32,15 @@ namespace FileStorage.Azure
             }
         }
 
-        public override bool CanRead
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanRead { get => false; }
 
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek { get => false; }
 
-        public override bool CanWrite
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool CanWrite { get => true; }
 
-        public override long Length
-        {
-            get
-            {
-                return lenght;
-            }
-        }
+        public override long Length { get { return lenght; } }
 
-        public override long Position
-        {
-            get; set;
-        }
+        public override long Position { get; set; }
 
         public override void Flush()
         {
@@ -87,26 +62,36 @@ namespace FileStorage.Azure
                 var blockId = Convert.ToBase64String(BitConverter.GetBytes(index));
                 blockDataList.Add(blockId);
                 s.Position = 0;
-                blockBlob.PutBlock(blockId, s, null);
+                blockBlob.PutBlockAsync(blockId, s, null).Wait();
                 index = s.Length + index;
                 lenght += s.Length;
                 s = new MemoryStream();
             }
         }
 
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
+        public override int Read(byte[] buffer, int offset, int count) { throw new NotImplementedException(); }
 
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
+        public override long Seek(long offset, SeekOrigin origin) { throw new NotImplementedException(); }
 
         public override void SetLength(long value)
         {
             lenght = value;
+        }
+        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            using (var uploadStream = new MemoryStream(buffer, offset, count))
+            {
+                uploadStream.Position = 0;
+                while (uploadStream.Position < uploadStream.Length)
+                {
+                    var chunk = new byte[this.blockSize - s.Position];
+                    var readBytes = await uploadStream.ReadAsync(chunk, 0, chunk.Length, cancellationToken).ConfigureAwait(false);
+                    await s.WriteAsync(chunk, 0, readBytes, cancellationToken).ConfigureAwait(false);
+
+                    if (s.Position >= this.blockSize)
+                        await FlushAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -129,9 +114,36 @@ namespace FileStorage.Azure
         protected override void Dispose(bool disposing)
         {
             Flush();
-            blockBlob.PutBlockList(blockDataList);
+            blockBlob.PutBlockListAsync(blockDataList).Wait();
             s.Dispose();
             base.Dispose(disposing);
+        }
+
+        public override async Task FlushAsync(CancellationToken cancellationToken)
+        {
+            if (s.Length > 0)
+            {
+                if (storageSettings.IsMimeTypeResolverEnabled && string.IsNullOrEmpty(blockBlob.Properties.ContentType))
+                {
+                    using (var mimeBytes = new MemoryStream())
+                    {
+                        var prev = s.Position;
+                        s.Position = 0;
+                        s.CopyTo(mimeBytes, 100);
+                        mimeBytes.Position = 0;
+                        blockBlob.Properties.ContentType = storageSettings.MimeTypeResolver.GetMimeType(mimeBytes.ToArray());
+                        s.Position = prev;
+                    }
+                }
+
+                var blockId = Convert.ToBase64String(BitConverter.GetBytes(index));
+                blockDataList.Add(blockId);
+                s.Position = 0;
+                await blockBlob.PutBlockAsync(blockId, s, null).ConfigureAwait(false);
+                index = s.Length + index;
+                lenght += s.Length;
+                s = new MemoryStream();
+            }
         }
     }
 }
