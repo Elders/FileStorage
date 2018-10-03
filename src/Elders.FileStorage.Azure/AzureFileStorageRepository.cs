@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using FileStorage.Extensions;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -67,13 +68,12 @@ namespace FileStorage.Azure
 
             foreach (var meta in metaInfo)
             {
-                // The key must comply with the identifier guidelines
-                //if (System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(meta.Key))
-                {
-                    // The supported characters in the blob metadata must be ASCII characters.
-                    // https://github.com/Azure/azure-sdk-for-net/issues/178
-                    blockBlob.Metadata.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
-                }
+                //  https://github.com/Azure/azure-sdk-for-net/issues/178
+                //  Important to note that using ascii encoding will replace all non-ascii characters with '?'(63)
+                string encodedKey = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(meta.Key));
+                string encodedValue = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(meta.Value));
+
+                blockBlob.Metadata.Add(encodedKey, encodedValue);
             }
 
             if (storageSettings.IsMimeTypeResolverEnabled)
