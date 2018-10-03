@@ -24,19 +24,12 @@ namespace FileStorage.Azure
             var key = GetKey(fileName, format);
             var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
 
-            try
+            using (var memoryStream = new MemoryStream())
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await blockBlob.DownloadToStreamAsync(memoryStream).ConfigureAwait(false);
-                    memoryStream.Position = 0;
+                await blockBlob.DownloadToStreamAsync(memoryStream).ConfigureAwait(false);
+                memoryStream.Position = 0;
 
-                    return new LocalFile(memoryStream.ToByteArray(), fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return new LocalFile(memoryStream.ToByteArray(), fileName);
             }
         }
 
