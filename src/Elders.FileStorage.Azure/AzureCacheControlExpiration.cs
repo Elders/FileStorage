@@ -12,8 +12,7 @@ namespace FileStorage.Azure
         /// <param name="seconds"></param>
         public AzureCacheControlExpiration(ulong seconds = 259200)
         {
-            if (seconds < 300)
-                throw new Exception("Minumum Cache Control expiration time is 300 seconds");
+            if (seconds < 300) throw new ArgumentException("Minumum Cache Control expiration time is 300 seconds", nameof(seconds));
 
             InSeconds = seconds;
         }

@@ -1,87 +1,68 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using FileStorage.MimeTypes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
 
 namespace FileStorage.Azure
 {
-    public class AzureStorageSettings : IFileStorageSettings<AzureStorageSettings>
+    public class AzureCdnSettings
     {
-        public CloudBlobContainer Container { get; private set; }
+        public AzureCdnSettings()
+        {
+            Enabled = false;
+            UrlExpirationInSeconds = 259200; // Default time is 7 days. Minumum time is 300 seconds
+        }
+
+        [JsonProperty("filestorage_azure_cdn_enabled")]
+        public bool Enabled { get; set; }
+
+        [JsonProperty("filestorage_azure_cdn_url")]
+        public string Url { get; set; }
+
+        [JsonProperty("filestorage_azure_cdn_url_expiration_in_seconds")]
+        public uint UrlExpirationInSeconds { get; set; }
+    }
+
+    public class AzureStorageSettings
+    {
+        public CloudBlobContainer Container { get; set; }
         public UrlExpiration UrlExpiration { get; set; }
+        public AzureCdnSettings Cdn { get; set; }
         public AzureCacheControlExpiration CacheControlExpiration { get; set; }
-        public string CdnUrl { get; private set; }
-        public IFileGenerator Generator { get; private set; }
-        public bool IsGenerationEnabled { get { return ReferenceEquals(Generator, null) == false; } }
-        public IMimeTypeResolver MimeTypeResolver { get; private set; }
-        public bool IsMimeTypeResolverEnabled { get { return ReferenceEquals(MimeTypeResolver, null) == false; } }
-        public int BlockSizeInKB { get; private set; }
 
         readonly Regex containerRegex = new Regex("^(?!-)(?!.*--)[a-z0-9-]{3,63}(?<!-)$");
 
-        int maxBlockSize = 4000;
 
-        public AzureStorageSettings(string connectionString, string containerName, int blockSizeInKB)
+        public AzureStorageSettings(IConfiguration configuration) : this(
+            configuration["filestorage_azure_connectionstring"],
+            configuration["filestorage_azure_container"],
+            configuration.GetValue<uint>("filestorage_azure_url_expiration_in_seconds", 0),
+            configuration.GetValue<uint>("filestorage_azure_cache_control_expiration", 259200),
+            JsonConvert.DeserializeObject(configuration["filestorage_azure_cdn"], typeof(AzureCdnSettings)) as AzureCdnSettings ?? new AzureCdnSettings())
         {
-            if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException(nameof(connectionString));
+
+        }
+
+        public AzureStorageSettings(string connectionString, string containerName, uint urlExpirationInSeconds, ulong cacheControlExpiration, AzureCdnSettings cdn)
+        {
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
             if (containerRegex.IsMatch(containerName) == false) throw new FormatException("Not supported Azure container name. Check https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/");
             var storageAccount = CloudStorageAccount.Parse(connectionString);
 
-            if (ReferenceEquals(storageAccount, null) == true) throw new ArgumentNullException(nameof(storageAccount));
+            if (storageAccount is null) throw new ArgumentNullException(nameof(storageAccount), "Unable to parse and get storage account using `CloudStorageAccount.Parse(connectionString)`");
             var blobClient = storageAccount.CreateCloudBlobClient();
 
-            if (ReferenceEquals(blobClient, null) == true) throw new ArgumentNullException(nameof(blobClient));
+            if (blobClient is null) throw new ArgumentNullException(nameof(blobClient), "Unable to get blobClient using `storageAccount.CreateCloudBlobClient()`");
             Container = blobClient.GetContainerReference(containerName);
 
-            if (ReferenceEquals(Container, null) == true) throw new ArgumentNullException(nameof(Container));
+            if (Container is null) throw new ArgumentNullException(nameof(Container), "Unable to get Container using `blobClient.GetContainerReference(containerName)`");
             bool created = Container.CreateIfNotExistsAsync().Result;
 
-            if (blockSizeInKB > maxBlockSize) throw new ArgumentException("Block size can not be more than 4mb");
-            BlockSizeInKB = blockSizeInKB;
-
-            UseUrlExpiration(new UrlExpiration());
-            UseCacheControlExpiration(new AzureCacheControlExpiration());
-        }
-
-
-        /// <summary>
-        /// Not working for URLs with CDN
-        /// </summary>
-        /// <param name="expiration"></param>
-        /// <returns></returns>
-        public AzureStorageSettings UseUrlExpiration(UrlExpiration expiration)
-        {
-            if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
-            UrlExpiration = expiration;
-            return this;
-        }
-
-        public AzureStorageSettings UseCacheControlExpiration(AzureCacheControlExpiration expiration)
-        {
-            if (ReferenceEquals(expiration, null) == true) throw new ArgumentNullException(nameof(expiration));
-            CacheControlExpiration = expiration;
-            return this;
-        }
-
-        public AzureStorageSettings UseFileGenerator(IFileGenerator generator)
-        {
-            if (ReferenceEquals(generator, null) == true) throw new ArgumentNullException(nameof(generator));
-            Generator = generator;
-            return this;
-        }
-
-        public AzureStorageSettings UseCdn(string cdnUrl)
-        {
-            CdnUrl = cdnUrl;
-            return this;
-        }
-
-        public AzureStorageSettings UseMimeTypeResolver(IMimeTypeResolver resolver)
-        {
-            if (ReferenceEquals(resolver, null) == true) throw new ArgumentNullException(nameof(resolver));
-            MimeTypeResolver = resolver;
-            return this;
+            UrlExpiration = new UrlExpiration(urlExpirationInSeconds);
+            CacheControlExpiration = new AzureCacheControlExpiration(cacheControlExpiration);
+            Cdn = cdn;
         }
     }
 }

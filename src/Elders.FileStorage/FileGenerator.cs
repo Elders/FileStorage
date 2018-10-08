@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FileStorage.FileFormats;
 
-namespace FileStorage.FileGenerator
+namespace FileStorage
 {
     public class FileGenerator : IFileGenerator
     {

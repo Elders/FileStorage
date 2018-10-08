@@ -14,17 +14,15 @@ namespace FileStorage.Azure
         long lenght = 0;
         int blockSize = 0;
         List<string> blockDataList;
-        AzureStorageSettings storageSettings;
         CloudBlockBlob blockBlob;
         MemoryStream s;
 
-        public AzureFileStorageStream(AzureStorageSettings storageSettings, string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public AzureFileStorageStream(CloudBlockBlob blockBlob, IEnumerable<FileMeta> metaInfo)
         {
             this.blockDataList = new List<string>();
-            this.storageSettings = storageSettings;
             this.s = new MemoryStream();
-            this.blockBlob = storageSettings.Container.GetBlockBlobReference(format + "/" + fileName);
-            this.blockSize = storageSettings.BlockSizeInKB * 1000;
+            this.blockBlob = blockBlob;
+            this.blockSize = 4000 * 1000;
             foreach (var meta in metaInfo)
             {
                 //  https://github.com/Azure/azure-sdk-for-net/issues/178
@@ -50,7 +48,7 @@ namespace FileStorage.Azure
         {
             if (s.Length > 0)
             {
-                if (storageSettings.IsMimeTypeResolverEnabled && string.IsNullOrEmpty(blockBlob.Properties.ContentType))
+                if (string.IsNullOrEmpty(blockBlob.Properties.ContentType))
                 {
                     using (var mimeBytes = new MemoryStream())
                     {
@@ -58,7 +56,7 @@ namespace FileStorage.Azure
                         s.Position = 0;
                         s.CopyTo(mimeBytes, 100);
                         mimeBytes.Position = 0;
-                        blockBlob.Properties.ContentType = storageSettings.MimeTypeResolver.GetMimeType(mimeBytes.ToArray());
+                        blockBlob.Properties.ContentType = mimeBytes.ToArray().GetMimeType();
                         s.Position = prev;
                     }
                 }
@@ -127,7 +125,7 @@ namespace FileStorage.Azure
         {
             if (s.Length > 0)
             {
-                if (storageSettings.IsMimeTypeResolverEnabled && string.IsNullOrEmpty(blockBlob.Properties.ContentType))
+                if (string.IsNullOrEmpty(blockBlob.Properties.ContentType))
                 {
                     using (var mimeBytes = new MemoryStream())
                     {
@@ -135,7 +133,7 @@ namespace FileStorage.Azure
                         s.Position = 0;
                         s.CopyTo(mimeBytes, 100);
                         mimeBytes.Position = 0;
-                        blockBlob.Properties.ContentType = storageSettings.MimeTypeResolver.GetMimeType(mimeBytes.ToArray());
+                        blockBlob.Properties.ContentType = mimeBytes.ToArray().GetMimeType();
                         s.Position = prev;
                     }
                 }

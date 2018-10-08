@@ -10,12 +10,18 @@ namespace FileStorage.Azure
 {
     public class AzureFileStorageRepository : IFileStorageRepository
     {
-        readonly AzureStorageSettings storageSettings;
+        private readonly CloudBlobContainer container;
+        private readonly AzureStorageSettings settings;
+        private readonly IFileGenerator generator;
 
-        public AzureFileStorageRepository(AzureStorageSettings storageSettings)
+        public AzureFileStorageRepository(AzureStorageSettings settings, IFileGenerator generator)
         {
-            if (ReferenceEquals(storageSettings, null) == true) throw new ArgumentNullException(nameof(storageSettings));
-            this.storageSettings = storageSettings;
+            if (settings is null) throw new ArgumentNullException(nameof(settings));
+            if (generator is null) throw new ArgumentNullException(nameof(generator));
+
+            this.container = settings.Container;
+            this.settings = settings;
+            this.generator = generator;
         }
 
         public async Task<IFile> DownloadAsync(string fileName, string format = "original")
@@ -23,7 +29,7 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+            var blockBlob = container.GetBlockBlobReference(key);
 
             using (var memoryStream = new MemoryStream())
             {
@@ -39,7 +45,7 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+            var blockBlob = container.GetBlockBlobReference(key);
             return blockBlob.ExistsAsync();
         }
 
@@ -48,11 +54,11 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+            var blockBlob = container.GetBlockBlobReference(key);
             var sharedAccessSignature = GetSasContainerToken();
 
-            if (string.IsNullOrWhiteSpace(storageSettings.CdnUrl) == false)
-                return Task.FromResult(storageSettings.CdnUrl + blockBlob.Uri.AbsolutePath + sharedAccessSignature);
+            if (settings.Cdn.Enabled)
+                return Task.FromResult(settings.Cdn.Url + blockBlob.Uri.AbsolutePath + sharedAccessSignature);
 
             return Task.FromResult(blockBlob.Uri + sharedAccessSignature);
         }
@@ -64,7 +70,7 @@ namespace FileStorage.Azure
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
-            var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+            var blockBlob = container.GetBlockBlobReference(key);
 
             foreach (var meta in metaInfo)
             {
@@ -76,32 +82,28 @@ namespace FileStorage.Azure
                 blockBlob.Metadata.Add(encodedKey, encodedValue);
             }
 
-            if (storageSettings.IsMimeTypeResolverEnabled)
-            {
-                var contentType = storageSettings.MimeTypeResolver.GetMimeType(data);
-                blockBlob.Properties.ContentType = contentType;
-            }
-
-            blockBlob.Properties.CacheControl = storageSettings.CacheControlExpiration.CacheControlHeader;
+            blockBlob.Properties.ContentType = data.GetMimeType();
+            blockBlob.Properties.CacheControl = settings.CacheControlExpiration.CacheControlHeader;
 
             return blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
         }
 
-        public Task<Stream> GetStreamAsync(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
+            var blockBlob = container.GetBlockBlobReference(format + "/" + fileName);
 
-            return Task.FromResult<Stream>(new AzureFileStorageStream(storageSettings, fileName, metaInfo, format));
+            return new AzureFileStorageStream(blockBlob, metaInfo);
         }
 
         public Task DeleteAsync(string fileName)
         {
             List<Task> deleteTasks = new List<Task>();
-            foreach (var format in storageSettings.Generator.Formats)
+            foreach (var format in generator.Formats)
             {
                 var key = GetKey(fileName, format.Name);
-                var blockBlob = storageSettings.Container.GetBlockBlobReference(key);
+                var blockBlob = container.GetBlockBlobReference(key);
                 Task deleteTask = blockBlob.DeleteIfExistsAsync();
                 deleteTasks.Add(deleteTask);
             }
@@ -113,11 +115,11 @@ namespace FileStorage.Azure
         {
             var sasConstraints = new SharedAccessBlobPolicy
             {
-                SharedAccessExpiryTime = storageSettings.UrlExpiration.InDateTime,
+                SharedAccessExpiryTime = settings.UrlExpiration.InDateTime,
                 Permissions = SharedAccessBlobPermissions.Read
             };
 
-            var sasContainerToken = storageSettings.Container.GetSharedAccessSignature(sasConstraints);
+            var sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
             return sasContainerToken;
         }
 

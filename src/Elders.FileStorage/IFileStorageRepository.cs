@@ -13,7 +13,7 @@ namespace FileStorage
         Task<IFile> DownloadAsync(string fileName, string format = "original");
         Task<string> GetFileUriAsync(string fileName, string format = "original");
         Task<bool> FileExistsAsync(string fileName, string format = "original");
-        Task<Stream> GetStreamAsync(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original");
+        Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original");
         Task DeleteAsync(string fileName);
     }
 }

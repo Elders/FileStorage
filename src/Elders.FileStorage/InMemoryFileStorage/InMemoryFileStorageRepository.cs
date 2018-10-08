@@ -56,7 +56,7 @@ namespace FileStorage.InMemoryFileStorage
             return Task.FromResult(storage.ContainsKey(key) ? key : string.Empty);
         }
 
-        public Task<Stream> GetStreamAsync(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
+        public Stream GetStream(string fileName, IEnumerable<FileMeta> metaInfo, string format = "original")
         {
             throw new NotImplementedException();
         }
@@ -75,11 +75,7 @@ namespace FileStorage.InMemoryFileStorage
                 metaDictionary.Add(Uri.EscapeUriString(meta.Key), Uri.EscapeUriString(meta.Value));
             }
 
-            var contentType = string.Empty;
-            if (storageSettings.IsMimeTypeResolverEnabled)
-            {
-                contentType = storageSettings.MimeTypeResolver.GetMimeType(data);
-            }
+            var contentType = data.GetMimeType();
 
             var file = new InMemoryFile(data, metaDictionary, contentType);
 
