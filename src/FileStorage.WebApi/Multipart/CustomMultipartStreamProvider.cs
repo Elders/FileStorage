@@ -75,7 +75,7 @@ namespace FileStorage.WebApi.Multipart
 
                     var original = stream.ToByteArray();
 
-                    repository.Upload(contentDisposition.FileName, original, new List<FileMeta>(), Original.FormatName);
+                    await repository.UploadAsync(contentDisposition.FileName, original, new List<FileMeta>(), Original.FormatName);
 
                     foreach (var format in generator.Formats)
                     {
@@ -83,7 +83,7 @@ namespace FileStorage.WebApi.Multipart
                             continue;
 
                         var file = format.Generate(original);
-                        repository.Upload(contentDisposition.FileName, file.Data, new List<FileMeta> { new FileMeta("SourceName", contentDisposition.FileName) }, format.Name);
+                        await repository.UploadAsync(contentDisposition.FileName, file.Data, new List<FileMeta> { new FileMeta("SourceName", contentDisposition.FileName) }, format.Name);
                     }
 
 
