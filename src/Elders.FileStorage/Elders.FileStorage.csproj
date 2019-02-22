@@ -48,6 +48,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="FileStorage.Abstractions.rn.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

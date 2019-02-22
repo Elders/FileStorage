@@ -22,5 +22,7 @@ namespace FileStorage
 
             InSeconds = Convert.ToUInt32(diff);
         }
+
+        public bool IsEnabled { get { return InSeconds > 0; } }
     }
 }

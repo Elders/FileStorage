@@ -9,13 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.WebApi", "FileS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Playground", "FileStorage.Playground\FileStorage.Playground.csproj", "{2814330B-A295-4C8F-B99A-93AA2161D24A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.FileSystem", "FileStorage.FileSystem\FileStorage.FileSystem.csproj", "{E363470E-F7DC-40F6-82E1-8DAD51E63304}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileSystem", "FileStorage.FileSystem\FileStorage.FileSystem.csproj", "{E363470E-F7DC-40F6-82E1-8DAD51E63304}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storages", "storages", "{4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7EB3EC88-8BDB-4881-971F-4CCFA6A1637C}"
 	ProjectSection(SolutionItems) = preProject
-		..\RELEASE_NOTES.md = ..\RELEASE_NOTES.md
+		Elders.FileStorage\FileStorage.Abstractions.rn.md = Elders.FileStorage\FileStorage.Abstractions.rn.md
+		Elders.FileStorage.Azure\FileStorage.Azure.rn.md = Elders.FileStorage.Azure\FileStorage.Azure.rn.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage", "Elders.FileStorage\Elders.FileStorage.csproj", "{4A75D96F-8119-4154-81C3-139AA6BB50AE}"

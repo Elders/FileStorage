@@ -12,7 +12,6 @@ namespace FileStorage.Azure
         public AzureCdnSettings()
         {
             Enabled = false;
-            UrlExpirationInSeconds = 259200; // Default time is 7 days. Minumum time is 300 seconds
         }
 
         [JsonProperty("filestorage_azure_cdn_enabled")]
@@ -20,9 +19,6 @@ namespace FileStorage.Azure
 
         [JsonProperty("filestorage_azure_cdn_url")]
         public string Url { get; set; }
-
-        [JsonProperty("filestorage_azure_cdn_url_expiration_in_seconds")]
-        public uint UrlExpirationInSeconds { get; set; }
     }
 
     public class AzureStorageSettings

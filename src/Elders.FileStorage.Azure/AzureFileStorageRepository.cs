@@ -113,6 +113,9 @@ namespace FileStorage.Azure
 
         string GetSasContainerToken()
         {
+            if (settings.UrlExpiration.IsEnabled == false)
+                return string.Empty;
+
             var sasConstraints = new SharedAccessBlobPolicy
             {
                 SharedAccessExpiryTime = settings.UrlExpiration.InDateTime,
