@@ -10,7 +10,7 @@ namespace FileStorage.Extensions
             using (MemoryStream ms = new MemoryStream())
             {
                 int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = input.ReadAsync(buffer, 0, buffer.Length).GetAwaiter().GetResult()) > 0)
                 {
                     ms.Write(buffer, 0, read);
                 }
