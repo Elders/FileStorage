@@ -1,27 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.AmazonS3", "FileStorage.AmazonS3\FileStorage.AmazonS3.csproj", "{375BD263-6FEC-4873-A46C-54DF6DAD54F4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.WebApi", "FileStorage.WebApi\FileStorage.WebApi.csproj", "{83980DAE-84E3-4718-A15A-C0BE93E57736}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Playground", "FileStorage.Playground\FileStorage.Playground.csproj", "{2814330B-A295-4C8F-B99A-93AA2161D24A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileSystem", "FileStorage.FileSystem\FileStorage.FileSystem.csproj", "{E363470E-F7DC-40F6-82E1-8DAD51E63304}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storages", "storages", "{4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7EB3EC88-8BDB-4881-971F-4CCFA6A1637C}"
-	ProjectSection(SolutionItems) = preProject
-		Elders.FileStorage\FileStorage.Abstractions.rn.md = Elders.FileStorage\FileStorage.Abstractions.rn.md
-		Elders.FileStorage.Azure\FileStorage.Azure.rn.md = Elders.FileStorage.Azure\FileStorage.Azure.rn.md
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage", "Elders.FileStorage\Elders.FileStorage.csproj", "{4A75D96F-8119-4154-81C3-139AA6BB50AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage.Azure", "Elders.FileStorage.Azure\Elders.FileStorage.Azure.csproj", "{FD6B2C95-3FF1-468B-9C89-52E650A83624}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Options.Extensions", "Options.Extensions\Options.Extensions.csproj", "{FADAB0E3-13A7-43EF-805C-B1A56AAFF998}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage.Playground", "Elders.FileStorage.Playground\Elders.FileStorage.Playground.csproj", "{96109ADF-BA97-4CED-8177-EC2154870396}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,22 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{375BD263-6FEC-4873-A46C-54DF6DAD54F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{375BD263-6FEC-4873-A46C-54DF6DAD54F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{375BD263-6FEC-4873-A46C-54DF6DAD54F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{375BD263-6FEC-4873-A46C-54DF6DAD54F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83980DAE-84E3-4718-A15A-C0BE93E57736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83980DAE-84E3-4718-A15A-C0BE93E57736}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83980DAE-84E3-4718-A15A-C0BE93E57736}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83980DAE-84E3-4718-A15A-C0BE93E57736}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2814330B-A295-4C8F-B99A-93AA2161D24A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E363470E-F7DC-40F6-82E1-8DAD51E63304}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A75D96F-8119-4154-81C3-139AA6BB50AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A75D96F-8119-4154-81C3-139AA6BB50AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A75D96F-8119-4154-81C3-139AA6BB50AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,13 +29,19 @@ Global
 		{FD6B2C95-3FF1-468B-9C89-52E650A83624}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD6B2C95-3FF1-468B-9C89-52E650A83624}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD6B2C95-3FF1-468B-9C89-52E650A83624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FADAB0E3-13A7-43EF-805C-B1A56AAFF998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FADAB0E3-13A7-43EF-805C-B1A56AAFF998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FADAB0E3-13A7-43EF-805C-B1A56AAFF998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FADAB0E3-13A7-43EF-805C-B1A56AAFF998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96109ADF-BA97-4CED-8177-EC2154870396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96109ADF-BA97-4CED-8177-EC2154870396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96109ADF-BA97-4CED-8177-EC2154870396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96109ADF-BA97-4CED-8177-EC2154870396}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{375BD263-6FEC-4873-A46C-54DF6DAD54F4} = {4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}
-		{E363470E-F7DC-40F6-82E1-8DAD51E63304} = {4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}
 		{FD6B2C95-3FF1-468B-9C89-52E650A83624} = {4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
