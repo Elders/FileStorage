@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using FileStorage.FileFormats;
 
@@ -6,13 +7,13 @@ namespace FileStorage
 {
     public class FileGenerator : IFileGenerator
     {
-        readonly Dictionary<string, IFileFormat> formats;
+        readonly ConcurrentDictionary<string, IFileFormat> formats;
 
         public IEnumerable<IFileFormat> Formats => formats.Values;
 
         public FileGenerator()
         {
-            formats = new Dictionary<string, IFileFormat>();
+            formats = new ConcurrentDictionary<string, IFileFormat>();
             RegisterFormat(new Original());
         }
 
@@ -23,9 +24,7 @@ namespace FileStorage
 
             foreach (var format in formats)
             {
-                if (this.formats.ContainsKey(format.Name) == false)
-                    this.formats.Add(format.Name, format);
-
+                this.formats.TryAdd(format.Name, format);
             }
         }
 
@@ -42,8 +41,8 @@ namespace FileStorage
 
         public IFileGenerator RegisterFormat(IFileFormat format)
         {
-            if (formats.ContainsKey(format.Name) == false)
-                formats.Add(format.Name, format);
+            formats.TryAdd(format.Name, format);
+
             return this;
         }
     }
