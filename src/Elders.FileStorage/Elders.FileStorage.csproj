@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <!--Nuget-->
@@ -9,7 +9,7 @@
     <Product>FileStorage</Product>
     <Title>FileStorage</Title>
     <Authors>Elders OSS</Authors>
-    <Copyright>Copyright © Elders OSS 2013</Copyright>
+    <Copyright>Copyright © Elders OSS 2013-2022</Copyright>
     <Description>FileStorage</Description>
     <PackageTags>file storage azure amazon blob bucket s3 aws</PackageTags>
     <PackageLicenseUrl>https://github.com/Elders/FileStorage/blob/master/LICENSE</PackageLicenseUrl>
@@ -19,27 +19,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>Elders.FileStorage</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <RootNamespace>Elders.FileStorage</RootNamespace>
+    <RootNamespace>FileStorage</RootNamespace>
   </PropertyGroup>
-
-  <!--netstandard2.0-->
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-  </ItemGroup>
-
-  <!--net472-->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net472'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net472'">
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
 
   <PropertyGroup>
     <DebugType>portable</DebugType>
@@ -48,12 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="FileStorage.Abstractions.rn.md" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="all">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 </Project>
