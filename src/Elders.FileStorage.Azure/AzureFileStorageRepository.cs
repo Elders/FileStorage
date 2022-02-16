@@ -4,23 +4,21 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using FileStorage.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace FileStorage.Azure
 {
     public class AzureFileStorageRepository : IFileStorageRepository
     {
-        private readonly CloudBlobContainer container;
-        private readonly AzureStorageSettings settings;
+        private readonly AzureStorageClient azureStorageClient;
         private readonly IFileGenerator generator;
+        private readonly AzureStorageOptions options;
 
-        public AzureFileStorageRepository(AzureStorageSettings settings, IFileGenerator generator)
+        public AzureFileStorageRepository(IOptionsMonitor<AzureStorageOptions> optionsMonitor, AzureStorageClient azureStorageClient, IFileGenerator generator)
         {
-            if (settings is null) throw new ArgumentNullException(nameof(settings));
-            if (generator is null) throw new ArgumentNullException(nameof(generator));
-
-            this.container = settings.Container;
-            this.settings = settings;
+            this.options = optionsMonitor.CurrentValue;
+            this.azureStorageClient = azureStorageClient;
             this.generator = generator;
         }
 
@@ -29,7 +27,7 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = azureStorageClient.Container.GetBlockBlobReference(key);
 
             using (var memoryStream = new MemoryStream())
             {
@@ -45,7 +43,7 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = azureStorageClient.Container.GetBlockBlobReference(key);
             return blockBlob.ExistsAsync();
         }
 
@@ -54,13 +52,10 @@ namespace FileStorage.Azure
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = azureStorageClient.Container.GetBlockBlobReference(key);
             var sharedAccessSignature = GetSasContainerToken();
 
-            if (settings.Cdn.Enabled)
-                return Task.FromResult(settings.Cdn.Url + blockBlob.Uri.AbsolutePath + sharedAccessSignature);
-
-            return Task.FromResult(blockBlob.Uri + sharedAccessSignature);
+            return Task.FromResult(options.CdnUrl + blockBlob.Uri.AbsolutePath + sharedAccessSignature);
         }
 
         public Task UploadAsync(string fileName, byte[] data, IEnumerable<FileMeta> metaInfo, string format = "original")
@@ -70,7 +65,7 @@ namespace FileStorage.Azure
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
 
             var key = GetKey(fileName, format);
-            var blockBlob = container.GetBlockBlobReference(key);
+            var blockBlob = azureStorageClient.Container.GetBlockBlobReference(key);
 
             foreach (var meta in metaInfo)
             {
@@ -83,7 +78,7 @@ namespace FileStorage.Azure
             }
 
             blockBlob.Properties.ContentType = data.GetMimeType();
-            blockBlob.Properties.CacheControl = settings.CacheControlExpiration.CacheControlHeader;
+            blockBlob.Properties.CacheControl = azureStorageClient.CacheControlExpiration.CacheControlHeader;
 
             return blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
         }
@@ -92,7 +87,7 @@ namespace FileStorage.Azure
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (ReferenceEquals(metaInfo, null) == true) throw new ArgumentNullException(nameof(metaInfo));
-            var blockBlob = container.GetBlockBlobReference(format + "/" + fileName);
+            var blockBlob = azureStorageClient.Container.GetBlockBlobReference(format + "/" + fileName);
 
             return new AzureFileStorageStream(blockBlob, metaInfo);
         }
@@ -103,7 +98,7 @@ namespace FileStorage.Azure
             foreach (var format in generator.Formats)
             {
                 var key = GetKey(fileName, format.Name);
-                var blockBlob = container.GetBlockBlobReference(key);
+                var blockBlob = azureStorageClient.Container.GetBlockBlobReference(key);
                 Task deleteTask = blockBlob.DeleteIfExistsAsync();
                 deleteTasks.Add(deleteTask);
             }
@@ -113,16 +108,22 @@ namespace FileStorage.Azure
 
         string GetSasContainerToken()
         {
-            if (settings.UrlExpiration.IsEnabled == false)
+            if (azureStorageClient.UrlExpiration.IsEnabled == false)
                 return string.Empty;
 
             var sasConstraints = new SharedAccessBlobPolicy
             {
-                SharedAccessExpiryTime = settings.UrlExpiration.InDateTime,
+                SharedAccessExpiryTime = azureStorageClient.UrlExpiration.InDateTime,
                 Permissions = SharedAccessBlobPermissions.Read
             };
 
-            var sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
+            //var sasConstraints = new BlobSasBuilder
+            //{
+            //    ExpiresOn = azureStorageClient.UrlExpiration.InDateTime,
+            //};
+            //sasConstraints.SetPermissions(BlobAccountSasPermissions.Read);
+
+            var sasContainerToken = azureStorageClient.Container.GetSharedAccessSignature(sasConstraints);
             return sasContainerToken;
         }
 
