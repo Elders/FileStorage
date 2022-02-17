@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storages", "storages", "{4208F73D-F2FD-4CC5-95CF-CEC713BDD54D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7EB3EC88-8BDB-4881-971F-4CCFA6A1637C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage", "Elders.FileStorage\Elders.FileStorage.csproj", "{4A75D96F-8119-4154-81C3-139AA6BB50AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elders.FileStorage.Azure", "Elders.FileStorage.Azure\Elders.FileStorage.Azure.csproj", "{FD6B2C95-3FF1-468B-9C89-52E650A83624}"
