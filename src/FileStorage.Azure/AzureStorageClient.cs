@@ -30,8 +30,8 @@ namespace FileStorage.Azure
                 throw new ArgumentNullException(nameof(blobContainerClient), "Unable to get blob container client");
             //TODO: CreateIfNotExistsAsync(PublicAccessType, IDictionary<String,String>, BlobContainerEncryptionScopeOptions, CancellationToken) in the repo
             blobContainerClient.CreateIfNotExistsAsync();
-
             BlobContainerClient = blobContainerClient;
+
             UrlExpiration = new UrlExpiration(_options.UrlTtlInSeconds);
             CacheControlExpiration = new AzureCacheControlExpiration(_options.CacheControlExpiration);
         }
